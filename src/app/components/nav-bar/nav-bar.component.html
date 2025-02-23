@@ -1,0 +1,38 @@
+<div
+	class="navbar-container"
+	[ngClass]="{ scrolled: isScrolled }"
+>
+	<div class="navbar-content">
+		<!-- Left Section -->
+		<div class="left-section">
+			<p-menubar [model]="items">
+				<ng-template #start> </ng-template>
+			</p-menubar>
+		</div>
+
+		<!-- Center Logo -->
+		<div class="center-logo">
+			<a [routerLink]="['/']">
+				<img
+					src="assets/logo/cadence_light_full.png"
+					alt="Logo"
+					class="logo-image"
+				/>
+			</a>
+		</div>
+
+		<!-- Right Section -->
+		<div class="right-section">
+			<a
+				[routerLink]="['/profile']"
+				class="profile-link"
+			>
+				<p-avatar
+					image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
+					shape="circle"
+					class="cursor-pointer"
+				/>
+			</a>
+		</div>
+	</div>
+</div>

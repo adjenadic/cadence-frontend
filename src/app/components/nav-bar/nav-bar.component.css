@@ -1,0 +1,117 @@
+/* Main navbar container */
+.navbar-container {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 1000;
+	background-color: rgba(26, 26, 26, 0.8);
+	transition: all 0.3s ease;
+}
+
+.navbar-container.scrolled {
+	background-color: rgba(26, 26, 26, 0.7);
+	backdrop-filter: blur(8px);
+	-webkit-backdrop-filter: blur(8px);
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-content {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0.5rem 2rem;
+	margin: 0 auto;
+	height: 64px;
+}
+
+.left-section {
+	flex: 1;
+}
+
+.center-logo {
+	flex: 0 0 auto;
+	padding: 0 2rem;
+}
+
+.logo-image {
+	height: 40px;
+	width: auto;
+}
+
+.right-section {
+	flex: 1;
+	display: flex;
+	justify-content: flex-end;
+}
+
+.profile-link {
+	text-decoration: none;
+}
+
+/* PrimeNG Menubar Customization */
+:host ::ng-deep .p-menubar {
+	background: transparent !important;
+	border: none !important;
+	padding: 0 !important;
+}
+
+/* Target root level menu items */
+:host ::ng-deep .p-menubar .p-menuitem-link {
+	background-color: #1a1a1a !important;
+	border: 2px solid #000000 !important;
+	border-radius: 4px !important;
+	padding: 0.5rem 1rem !important;
+	margin: 0 0.5rem !important;
+}
+
+/* Hover state */
+:host ::ng-deep .p-menubar .p-menuitem-link:hover {
+	background-color: #000000 !important;
+	border-color: #000000 !important;
+}
+
+/* Text and icon colors */
+:host ::ng-deep .p-menubar .p-menuitem-text,
+:host ::ng-deep .p-menubar .p-menuitem-icon {
+	color: #ffffff !important;
+}
+
+/* Submenu styling */
+:host ::ng-deep .p-menubar .p-submenu-list {
+	background-color: rgba(235, 235, 235, 0.9) !important;
+	backdrop-filter: blur(8px);
+	-webkit-backdrop-filter: blur(8px);
+	border: 1px solid #000000 !important;
+	padding: 0.5rem !important;
+}
+
+/* Submenu items */
+:host ::ng-deep .p-menubar .p-submenu-list .p-menuitem-link {
+	background-color: transparent !important;
+	border: none !important;
+}
+
+:host ::ng-deep .p-menubar .p-submenu-list .p-menuitem-text {
+	color: #1a1a1a !important;
+}
+
+:host ::ng-deep .p-menubar .p-submenu-list .p-menuitem-link:hover {
+	background-color: #000000 !important;
+}
+
+:host
+	::ng-deep
+	.p-menubar
+	.p-submenu-list
+	.p-menuitem-link:hover
+	.p-menuitem-text {
+	color: #ffffff !important;
+}
+
+/* Badge styling */
+:host ::ng-deep .p-menubar .p-badge {
+	margin-left: 0.5rem;
+	background-color: #00ff9d !important;
+	color: #000000 !important;
+}
