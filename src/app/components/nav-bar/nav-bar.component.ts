@@ -44,13 +44,11 @@ export class NavBarComponent implements OnInit {
 					{
 						label: 'Core',
 						icon: 'pi pi-bolt',
-						shortcut: '⌘+S',
 						routerLink: ['/projects/core'],
 					},
 					{
 						label: 'Blocks',
 						icon: 'pi pi-server',
-						shortcut: '⌘+B',
 						routerLink: ['/projects/blocks'],
 					},
 					{
@@ -59,7 +57,6 @@ export class NavBarComponent implements OnInit {
 					{
 						label: 'UI Kit',
 						icon: 'pi pi-pencil',
-						shortcut: '⌘+U',
 						routerLink: ['/projects/ui-kit'],
 					},
 				],
