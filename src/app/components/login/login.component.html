@@ -1,0 +1,68 @@
+<div class="login-page">
+	<div class="login-card">
+		<img
+			src="assets/logo/cadence_light_full.png"
+			alt="Logo"
+			class="login-logo"
+		/>
+
+		<h2 class="login-title">Welcome Back</h2>
+		<div class="account-prompt">
+			<span>Don't have an account?</span>
+			<a
+				href="#"
+				class="create-link"
+				>Create today!</a
+			>
+		</div>
+
+		<form
+			[formGroup]="loginForm"
+			(ngSubmit)="onSubmit()"
+		>
+			<div class="form-field">
+				<label for="email">Email</label>
+				<input
+					id="email"
+					formControlName="email"
+					type="text"
+					pInputText
+				/>
+			</div>
+
+			<div class="form-field">
+				<label for="password">Password</label>
+				<input
+					id="password"
+					formControlName="password"
+					type="password"
+					pInputText
+				/>
+			</div>
+
+			<div class="login-options">
+				<div class="remember-me">
+					<p-checkbox
+						formControlName="rememberMe"
+						[binary]="true"
+						inputId="remember"
+					></p-checkbox>
+					<label for="remember">Remember me</label>
+				</div>
+				<a
+					href="#"
+					class="forgot-link"
+					>Forgot password?</a
+				>
+			</div>
+
+			<button
+				pButton
+				type="submit"
+				label="Sign In"
+				icon="pi pi-user"
+				[loading]="loading"
+			></button>
+		</form>
+	</div>
+</div>

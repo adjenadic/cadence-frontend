@@ -21,7 +21,7 @@ export class AppComponent implements OnInit {
 		this.primeng.ripple.set(true);
 		this.router.events.subscribe(event => {
 			if (event instanceof NavigationEnd) {
-				const excludedRoutes = ['/abc'];
+				const excludedRoutes = ['/login', '/register'];
 				this.showToolbar = !excludedRoutes.includes(event.url);
 			}
 		});

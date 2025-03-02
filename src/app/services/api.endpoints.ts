@@ -2,43 +2,43 @@ export const ApiEndpoints = {
 	// AuthService
 	auth: {
 		// POST
-		postLogin: '/api/auth/login',
+		postLogin: '/auth/login',
 	},
 
 	// UserService
 	users: {
 		// GET
-		getAll: '/api/users/all',
-		getById: '/api/users',
-		getByEmail: '/api/users',
-		getByUsername: '/api/users',
+		getAll: '/users/all',
+		getById: '/users',
+		getByEmail: '/users',
+		getByUsername: '/users',
 		// POST
-		postCreate: '/api/users/create',
+		postCreate: '/users/create',
 		// PUT
-		putUpdateEmail: '/api/users/email',
-		putUpdateUsername: '/api/users/username',
-		putUpdatePassword: '/api/users/password',
-		putUpdatePronouns: '/api/users/pronouns',
-		putUpdateAboutMe: '/api/users/about-me',
-		putUpdateProfilePicture: '/api/users/password',
-		putUpdatePermissions: '/api/users/permissions',
+		putUpdateEmail: '/users/email',
+		putUpdateUsername: '/users/username',
+		putUpdatePassword: '/users/password',
+		putUpdatePronouns: '/users/pronouns',
+		putUpdateAboutMe: '/users/about-me',
+		putUpdateProfilePicture: '/users/password',
+		putUpdatePermissions: '/users/permissions',
 		// DELETE
-		deleteById: '/api/users',
-		deleteByEmail: '/api/users',
+		deleteById: '/users',
+		deleteByEmail: '/users',
 	},
 
 	// CommentService
 	comments: {
 		// GET
-		getByUserId: '/api/comments/user-id',
-		getById: '/api/comments',
+		getByUserId: '/comments/user-id',
+		getById: '/comments',
 		// POST
-		postCreate: '/api/comments/create',
+		postCreate: '/comments/create',
 		// PUT
-		putUpdate: '/api/comments/update',
-		putLike: '/api/comments/like',
-		putUnlike: '/api/comments/unlike',
+		putUpdate: '/comments/update',
+		putLike: '/comments/like',
+		putUnlike: '/comments/unlike',
 		// DELETE
-		deleteById: '/api/comments/delete',
+		deleteById: '/comments/delete',
 	},
 };

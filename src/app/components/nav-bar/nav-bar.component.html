@@ -23,16 +23,29 @@
 
 		<!-- Right Section -->
 		<div class="right-section">
-			<a
-				[routerLink]="['/profile']"
-				class="profile-link"
-			>
+			<ng-container *ngIf="isAuthenticated; else loginButton">
+				<p-menu
+					#menu
+					[popup]="true"
+					[model]="userMenuItems"
+				></p-menu>
 				<p-avatar
 					image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
 					shape="circle"
 					class="cursor-pointer"
-				/>
-			</a>
+					(click)="menu.toggle($event)"
+				></p-avatar>
+			</ng-container>
+			<ng-template #loginButton>
+				<button
+					pButton
+					type="button"
+					label="Login"
+					icon="pi pi-sign-in"
+					class="p-button-text"
+					[routerLink]="['/login']"
+				></button>
+			</ng-template>
 		</div>
 	</div>
 </div>

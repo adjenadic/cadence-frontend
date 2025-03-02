@@ -3,9 +3,12 @@ import { MenuItem } from 'primeng/api';
 import { Menubar } from 'primeng/menubar';
 import { BadgeModule } from 'primeng/badge';
 import { AvatarModule } from 'primeng/avatar';
+import { MenuModule } from 'primeng/menu';
+import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { AuthService } from '../../services/user-service/auth.service';
 
 @Component({
 	selector: 'app-nav-bar',
@@ -13,6 +16,8 @@ import { RouterModule } from '@angular/router';
 		Menubar,
 		BadgeModule,
 		AvatarModule,
+		MenuModule,
+		ButtonModule,
 		InputTextModule,
 		CommonModule,
 		RouterModule,
@@ -24,6 +29,10 @@ import { RouterModule } from '@angular/router';
 export class NavBarComponent implements OnInit {
 	items: MenuItem[] | undefined;
 	isScrolled = false;
+	isAuthenticated = false;
+	userMenuItems: MenuItem[] | undefined;
+
+	constructor(private authService: AuthService) {}
 
 	@HostListener('window:scroll', [])
 	onWindowScroll() {
@@ -31,6 +40,11 @@ export class NavBarComponent implements OnInit {
 	}
 
 	ngOnInit() {
+		this.authService.isAuthenticated().subscribe(isAuth => {
+			this.isAuthenticated = isAuth;
+			this.updateUserMenu();
+		});
+
 		this.items = [
 			{
 				label: 'Home',
@@ -62,5 +76,28 @@ export class NavBarComponent implements OnInit {
 				],
 			},
 		];
+
+		this.updateUserMenu();
+	}
+
+	updateUserMenu() {
+		if (this.isAuthenticated) {
+			this.userMenuItems = [
+				{
+					label: 'Profile',
+					icon: 'pi pi-user',
+					routerLink: ['/profile'],
+				},
+				{
+					label: 'Log out',
+					icon: 'pi pi-sign-out',
+					command: () => this.logout(),
+				},
+			];
+		}
+	}
+
+	logout() {
+		this.authService.logout();
 	}
 }
