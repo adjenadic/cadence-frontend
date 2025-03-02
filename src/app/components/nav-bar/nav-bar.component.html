@@ -23,7 +23,7 @@
 
 		<!-- Right Section -->
 		<div class="right-section">
-			<ng-container *ngIf="isAuthenticated; else loginButton">
+			<ng-container *ngIf="isAuthenticated; else authButtons">
 				<p-menu
 					#menu
 					[popup]="true"
@@ -36,14 +36,22 @@
 					(click)="menu.toggle($event)"
 				></p-avatar>
 			</ng-container>
-			<ng-template #loginButton>
+			<ng-template #authButtons>
 				<button
 					pButton
 					type="button"
-					label="Login"
+					label="Log In"
 					icon="pi pi-sign-in"
 					class="p-button-text"
 					[routerLink]="['/login']"
+				></button>
+				<button
+					pButton
+					type="button"
+					label="Sign Up"
+					icon="pi pi-sign-in"
+					class="p-button-text"
+					[routerLink]="['/register']"
 				></button>
 			</ng-template>
 		</div>

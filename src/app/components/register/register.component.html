@@ -97,12 +97,21 @@
 				/>
 				<small
 					*ngIf="
-						registerForm.hasError('passwordMismatch') &&
+						(registerForm.get('confirmedPassword')?.invalid ||
+							registerForm.hasError('passwordMismatch')) &&
 						registerForm.get('confirmedPassword')?.touched
 					"
 					class="p-error"
-					>Passwords do not match.</small
 				>
+					<span
+						*ngIf="registerForm.get('confirmedPassword')?.errors?.['required']"
+						>Confirm password is required.</span
+					>
+					<span
+						*ngIf="registerForm.hasError('passwordMismatch') && !registerForm.get('confirmedPassword')?.errors?.['required']"
+						>Passwords do not match.</span
+					>
+				</small>
 			</div>
 			<div class="account-prompt">
 				<span>Already have an account?</span>

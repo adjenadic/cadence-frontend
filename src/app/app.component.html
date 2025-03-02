@@ -1,8 +1,28 @@
 <app-nav-bar *ngIf="showToolbar"></app-nav-bar>
-<div class="background"></div>
+<div
+	class="background"
+	[ngClass]="{ 'with-image': showBackgroundImage }"
+></div>
 <section
 	class="container"
 	[style.padding-top.px]="showToolbar ? 90 : 0"
 >
 	<router-outlet></router-outlet>
 </section>
+<div
+	class="image-attribution"
+	*ngIf="showBackgroundImage"
+>
+	Photo by
+	<a
+		href="https://unsplash.com/@duncan_shaffer"
+		target="_blank"
+		>Duncan Shaffer</a
+	>
+	on
+	<a
+		href="https://unsplash.com/photos/grayscale-photo-of-man-playing-guitar-0JTDHPIjkHc"
+		target="_blank"
+		>Unsplash</a
+	>
+</div>
