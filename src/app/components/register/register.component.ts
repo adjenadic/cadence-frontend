@@ -13,6 +13,9 @@ import { UserService } from '../../services/user-service/user.service';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { RouterModule } from '@angular/router';
+import { usernameValidator } from '../../validators/username.validator';
+import { passwordValidator } from '../../validators/password.validator';
+import { passwordMatchValidator } from '../../validators/password-match.validator';
 
 @Component({
 	selector: 'app-register',
@@ -38,11 +41,17 @@ export class RegisterComponent {
 		private router: Router,
 		private messageService: MessageService,
 	) {
-		this.registerForm = this.fb.group({
-			email: ['', [Validators.required, Validators.email]],
-			username: ['', Validators.required],
-			password: ['', Validators.required],
-		});
+		this.registerForm = this.fb.group(
+			{
+				email: ['', [Validators.required, Validators.email]],
+				username: ['', [Validators.required, usernameValidator()]],
+				password: ['', [Validators.required, passwordValidator()]],
+				confirmedPassword: ['', Validators.required],
+			},
+			{
+				validators: passwordMatchValidator,
+			},
+		);
 	}
 
 	onSubmit() {
@@ -51,10 +60,11 @@ export class RegisterComponent {
 		}
 
 		this.loading = true;
-		const { email, username, password } = this.registerForm.value;
+		const { email, username, password, confirmedPassword } =
+			this.registerForm.value;
 
 		this.userService
-			.postCreateUser({ email, username, password })
+			.postCreateUser({ email, username, password, confirmedPassword })
 			.subscribe({
 				next: response => {
 					this.messageService.add({

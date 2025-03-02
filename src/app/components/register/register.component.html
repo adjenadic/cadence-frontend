@@ -20,6 +20,21 @@
 					type="text"
 					pInputText
 				/>
+				<small
+					*ngIf="
+						registerForm.get('email')?.invalid &&
+						registerForm.get('email')?.touched
+					"
+					class="p-error"
+				>
+					<span
+						*ngIf="registerForm.get('email')?.errors?.['required']"
+						>Email is required.</span
+					>
+					<span *ngIf="registerForm.get('email')?.errors?.['email']"
+						>Please enter a valid email address.</span
+					>
+				</small>
 			</div>
 			<div class="form-field">
 				<label for="username">Username</label>
@@ -29,6 +44,23 @@
 					type="text"
 					pInputText
 				/>
+				<small
+					*ngIf="
+						registerForm.get('username')?.invalid &&
+						registerForm.get('username')?.touched
+					"
+					class="p-error"
+				>
+					<span
+						*ngIf="registerForm.get('username')?.errors?.['required']"
+						>Username is required.</span
+					>
+					<span
+						*ngIf="registerForm.get('username')?.errors?.['invalidUsername']"
+						>Username may only contain lowercase letters, numbers,
+						and periods.</span
+					>
+				</small>
 			</div>
 			<div class="form-field">
 				<label for="password">Password</label>
@@ -38,6 +70,39 @@
 					type="password"
 					pInputText
 				/>
+				<small
+					*ngIf="
+						registerForm.get('password')?.invalid &&
+						registerForm.get('password')?.touched
+					"
+					class="p-error"
+				>
+					<span
+						*ngIf="registerForm.get('password')?.errors?.['required']"
+						>Password is required.</span
+					>
+					<span
+						*ngIf="registerForm.get('password')?.errors?.['weakPassword']"
+						>Password must be at least 10 characters long.</span
+					>
+				</small>
+			</div>
+			<div class="form-field">
+				<label for="confirmedPassword">Confirm Password</label>
+				<input
+					id="confirmedPassword"
+					formControlName="confirmedPassword"
+					type="password"
+					pInputText
+				/>
+				<small
+					*ngIf="
+						registerForm.hasError('passwordMismatch') &&
+						registerForm.get('confirmedPassword')?.touched
+					"
+					class="p-error"
+					>Passwords do not match.</small
+				>
 			</div>
 			<div class="account-prompt">
 				<span>Already have an account?</span>
@@ -50,7 +115,7 @@
 			<button
 				pButton
 				type="submit"
-				label="Register"
+				label="Sign Up"
 				icon="pi pi-user-plus"
 				[loading]="loading"
 				[disabled]="registerForm.invalid"

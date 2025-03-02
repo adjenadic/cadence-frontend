@@ -21,6 +21,20 @@
 					type="text"
 					pInputText
 				/>
+				<small
+					*ngIf="
+						loginForm.get('email')?.invalid &&
+						loginForm.get('email')?.touched
+					"
+					class="p-error"
+				>
+					<span *ngIf="loginForm.get('email')?.errors?.['required']"
+						>Email is required.</span
+					>
+					<span *ngIf="loginForm.get('email')?.errors?.['email']"
+						>Please enter a valid email address.</span
+					>
+				</small>
 			</div>
 
 			<div class="form-field">
@@ -38,7 +52,7 @@
 				<a
 					[routerLink]="['/register']"
 					class="create-link"
-					>Register here.</a
+					>Sign up here.</a
 				>
 			</div>
 

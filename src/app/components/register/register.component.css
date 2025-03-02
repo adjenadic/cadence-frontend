@@ -73,3 +73,10 @@
 	background-color: #4d4d4d;
 	border: none;
 }
+
+:host ::ng-deep .p-error {
+	color: #f44336;
+	font-size: 0.75rem;
+	margin-top: 0.25rem;
+	display: block;
+}
