@@ -1,1 +1,60 @@
-<p>register works!</p>
+<div class="register-page">
+	<div class="register-card">
+		<a [routerLink]="['/']">
+			<img
+				src="assets/logo/cadence_light_full.png"
+				alt="Logo"
+				class="register-logo"
+			/>
+		</a>
+		<form
+			class="register-form"
+			[formGroup]="registerForm"
+			(ngSubmit)="onSubmit()"
+		>
+			<div class="form-field">
+				<label for="email">Email</label>
+				<input
+					id="email"
+					formControlName="email"
+					type="text"
+					pInputText
+				/>
+			</div>
+			<div class="form-field">
+				<label for="username">Username</label>
+				<input
+					id="username"
+					formControlName="username"
+					type="text"
+					pInputText
+				/>
+			</div>
+			<div class="form-field">
+				<label for="password">Password</label>
+				<input
+					id="password"
+					formControlName="password"
+					type="password"
+					pInputText
+				/>
+			</div>
+			<div class="account-prompt">
+				<span>Already have an account?</span>
+				<a
+					[routerLink]="['/login']"
+					class="create-link"
+					>Sign in here.</a
+				>
+			</div>
+			<button
+				pButton
+				type="submit"
+				label="Register"
+				icon="pi pi-user-plus"
+				[loading]="loading"
+				[disabled]="registerForm.invalid"
+			></button>
+		</form>
+	</div>
+</div>

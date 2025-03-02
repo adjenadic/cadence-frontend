@@ -10,30 +10,23 @@
 	border-radius: 0.5rem;
 	padding: 2rem;
 	width: 100%;
-	max-width: 25rem;
+	max-width: 35rem;
 	text-align: center;
+}
+
+.login-form {
+	margin-top: 1rem;
 }
 
 .login-logo {
 	max-height: 2.5rem;
-	margin-bottom: 1.5rem;
-}
-
-.login-title {
-	color: white;
-	font-size: 1.5rem;
-	margin-bottom: 0.5rem;
-}
-
-.account-prompt {
-	margin-bottom: 2rem;
-	color: #cccccc;
 }
 
 .create-link {
-	color: #4caf50;
+	color: white;
 	text-decoration: none;
 	margin-left: 0.5rem;
+	font-weight: bold;
 }
 
 .form-field {
@@ -47,26 +40,10 @@
 	margin-bottom: 0.5rem;
 }
 
-.login-options {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	margin-bottom: 1.5rem;
-}
-
-.remember-me {
-	display: flex;
-	align-items: center;
+.account-prompt {
+	margin-top: 2rem;
+	margin-bottom: 2rem;
 	color: #cccccc;
-}
-
-.remember-me label {
-	margin-left: 0.5rem;
-}
-
-.forgot-link {
-	color: #4caf50;
-	text-decoration: none;
 }
 
 :host ::ng-deep .p-inputtext {
@@ -78,11 +55,21 @@
 
 :host ::ng-deep .p-button {
 	width: 100%;
-	background-color: #4caf50;
-	border: none;
+	background-color: white;
+	border: #0d0d0d;
 }
 
-:host ::ng-deep .p-checkbox .p-checkbox-box {
-	background-color: #242424;
-	border-color: #333;
+:host ::ng-deep .p-button:hover {
+	background-color: #a3a3a3;
+	border: #0d0d0d;
+}
+
+:host ::ng-deep .p-button:disabled {
+	background-color: #4d4d4d;
+	color: #8c8c8c;
+}
+
+:host ::ng-deep .p-button:disabled:hover {
+	background-color: #4d4d4d;
+	border: none;
 }

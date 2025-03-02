@@ -1,22 +1,15 @@
 <div class="login-page">
 	<div class="login-card">
-		<img
-			src="assets/logo/cadence_light_full.png"
-			alt="Logo"
-			class="login-logo"
-		/>
-
-		<h2 class="login-title">Welcome Back</h2>
-		<div class="account-prompt">
-			<span>Don't have an account?</span>
-			<a
-				href="#"
-				class="create-link"
-				>Create today!</a
-			>
-		</div>
+		<a [routerLink]="['/']">
+			<img
+				src="assets/logo/cadence_light_full.png"
+				alt="Logo"
+				class="login-logo"
+			/>
+		</a>
 
 		<form
+			class="login-form"
 			[formGroup]="loginForm"
 			(ngSubmit)="onSubmit()"
 		>
@@ -40,19 +33,12 @@
 				/>
 			</div>
 
-			<div class="login-options">
-				<div class="remember-me">
-					<p-checkbox
-						formControlName="rememberMe"
-						[binary]="true"
-						inputId="remember"
-					></p-checkbox>
-					<label for="remember">Remember me</label>
-				</div>
+			<div class="account-prompt">
+				<span>Don't have an account?</span>
 				<a
-					href="#"
-					class="forgot-link"
-					>Forgot password?</a
+					[routerLink]="['/register']"
+					class="create-link"
+					>Register here.</a
 				>
 			</div>
 
@@ -62,6 +48,7 @@
 				label="Sign In"
 				icon="pi pi-user"
 				[loading]="loading"
+				[disabled]="loginForm.invalid"
 			></button>
 		</form>
 	</div>
