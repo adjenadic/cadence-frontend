@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
+import { ErrorHandlingService } from '../../services/error-handling-service/error-handling.service';
 import { UserService } from '../../services/user-service/user.service';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
@@ -37,6 +38,7 @@ export class RegisterComponent {
 
 	constructor(
 		private fb: FormBuilder,
+		private errorHandlingService: ErrorHandlingService,
 		private userService: UserService,
 		private router: Router,
 		private messageService: MessageService,
@@ -69,20 +71,24 @@ export class RegisterComponent {
 				next: response => {
 					this.messageService.add({
 						severity: 'success',
-						summary: 'Registration Successful',
-						detail: 'You can now log in',
+						summary:
+							'Registration Successful (Pending Verification)',
+						detail: 'The confirmation email has been sent to your specified email address.',
 					});
 					this.router.navigate(['/login']);
 				},
 				error: error => {
-					this.messageService.add({
-						severity: 'error',
-						summary: 'Registration Failed',
-						detail:
-							error.message ||
-							'An error occurred during registration',
-					});
 					this.loading = false;
+					const errorMessage =
+						this.errorHandlingService.extractErrorMessage(error);
+					const severity = this.errorHandlingService.getErrorSeverity(
+						error.status,
+					);
+					this.messageService.add({
+						severity: severity,
+						summary: 'Registration Failed',
+						detail: errorMessage,
+					});
 				},
 			});
 	}

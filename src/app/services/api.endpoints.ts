@@ -14,6 +14,7 @@ export const ApiEndpoints = {
 		getByUsername: 'users',
 		// POST
 		postCreate: 'users/create',
+		postVerifyEmail: 'users/verify-email?verificationToken=',
 		// PUT
 		putUpdateEmail: 'users/email',
 		putUpdateUsername: 'users/username',

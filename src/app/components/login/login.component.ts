@@ -10,6 +10,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { CommonModule } from '@angular/common';
+import { ErrorHandlingService } from '../../services/error-handling-service/error-handling.service';
 import { AuthService } from '../../services/user-service/auth.service';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
@@ -38,6 +39,7 @@ export class LoginComponent {
 		private fb: FormBuilder,
 		private authService: AuthService,
 		private router: Router,
+		private errorHandlingService: ErrorHandlingService,
 		private messageService: MessageService,
 	) {
 		this.loginForm = this.fb.group({
@@ -56,15 +58,18 @@ export class LoginComponent {
 
 		this.authService.login({ email, password }).subscribe({
 			next: () => {
+				this.loading = false;
 				this.router.navigate(['/']);
 			},
 			error: error => {
+				this.loading = false;
+				const errorMessage =
+					this.errorHandlingService.extractErrorMessage(error);
 				this.messageService.add({
 					severity: 'error',
 					summary: 'Login Failed',
-					detail: 'Invalid email or password',
+					detail: errorMessage,
 				});
-				this.loading = false;
 			},
 		});
 	}

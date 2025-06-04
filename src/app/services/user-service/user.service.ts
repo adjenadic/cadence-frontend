@@ -52,9 +52,18 @@ export class UserService {
 	}
 
 	postCreateUser(user: RequestCreateUserDto) {
-		return this.httpClient.post<ResponseUserDto>(
+		return this.httpClient.post<boolean>(
 			environment.userServiceApiUrl + ApiEndpoints.users.postCreate,
 			user,
+		);
+	}
+
+	postVerifyEmail(verificationToken: String) {
+		return this.httpClient.post<ResponseUserDto>(
+			environment.userServiceApiUrl +
+				ApiEndpoints.users.postVerifyEmail +
+				`${verificationToken}`,
+			{},
 		);
 	}
 

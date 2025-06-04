@@ -4,10 +4,11 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 import { PrimeNG } from 'primeng/config';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
 	selector: 'app-root',
-	imports: [RouterModule, CommonModule, NavBarComponent],
+	imports: [RouterModule, CommonModule, NavBarComponent, ToastModule],
 	templateUrl: './app.component.html',
 	styleUrl: './app.component.css',
 })
