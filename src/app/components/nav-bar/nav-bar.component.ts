@@ -31,6 +31,8 @@ export class NavBarComponent implements OnInit {
 	isScrolled = false;
 	isAuthenticated = false;
 	userMenuItems: MenuItem[] | undefined;
+	currentUser: any = null;
+	userProfileImage: string = 'assets/default-avatar.png';
 
 	constructor(private authService: AuthService) {}
 
@@ -42,6 +44,9 @@ export class NavBarComponent implements OnInit {
 	ngOnInit() {
 		this.authService.isAuthenticated().subscribe(isAuth => {
 			this.isAuthenticated = isAuth;
+			if (isAuth) {
+				this.loadCurrentUser();
+			}
 			this.updateUserMenu();
 		});
 
@@ -95,6 +100,14 @@ export class NavBarComponent implements OnInit {
 				},
 			];
 		}
+	}
+
+	loadCurrentUser() {
+		this.authService.getCurrentUser().subscribe(user => {
+			this.currentUser = user;
+			this.userProfileImage =
+				user?.profilePicture || 'assets/default-avatar.png';
+		});
 	}
 
 	logout() {

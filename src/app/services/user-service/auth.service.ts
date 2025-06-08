@@ -5,6 +5,9 @@ import { environment } from '../../../environments/environment.dev';
 import { ApiEndpoints } from '../api.endpoints';
 import { TokenDto } from '../../dtos/token-dto';
 import { RequestLoginDto } from '../../dtos/request-login-dto';
+import { jwtDecode } from 'jwt-decode';
+import { ResponseUserDto } from '../../dtos/response-user-dto';
+import { of } from 'rxjs';
 
 @Injectable({
 	providedIn: 'root',
@@ -48,5 +51,32 @@ export class AuthService {
 
 	private hasToken(): boolean {
 		return !!localStorage.getItem(this.JWT_TOKEN);
+	}
+
+	private decodeToken(): any {
+		const token = localStorage.getItem(this.JWT_TOKEN);
+		if (!token) return null;
+		try {
+			return jwtDecode(token);
+		} catch (error) {
+			return null;
+		}
+	}
+
+	getUsername(): string | null {
+		const decoded = this.decodeToken();
+		return decoded?.sub || null;
+	}
+
+	getUserByUsername(username: string): Observable<ResponseUserDto> {
+		return this.httpClient.get<ResponseUserDto>(
+			environment.userServiceApiUrl + '/api/users/username/' + username,
+		);
+	}
+
+	getCurrentUser(): Observable<ResponseUserDto | null> {
+		const username = this.getUsername();
+		if (!username) return of(null);
+		return this.getUserByUsername(username);
 	}
 }
