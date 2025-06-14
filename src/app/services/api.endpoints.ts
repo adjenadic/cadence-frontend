@@ -21,7 +21,7 @@ export const ApiEndpoints = {
 		putUpdatePassword: 'users/password',
 		putUpdatePronouns: 'users/pronouns',
 		putUpdateAboutMe: 'users/about-me',
-		putUpdateProfilePicture: 'users/password',
+		putUpdateProfilePicture: 'users/profile-picture',
 		putUpdatePermissions: 'users/permissions',
 		// DELETE
 		deleteById: 'users',

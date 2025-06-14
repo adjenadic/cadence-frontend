@@ -105,10 +105,16 @@ export class NavBarComponent implements OnInit {
 	loadCurrentUser() {
 		this.authService.getCurrentUser().subscribe(user => {
 			this.currentUser = user;
-			this.userProfileImage =
-				user?.profilePicture || 'assets/default-avatar.png';
+			this.userProfileImage = this.getProfilePictureUrl(user);
 			this.updateUserMenu();
 		});
+	}
+
+	getProfilePictureUrl(user: any): string {
+		if (!user?.profilePicture) {
+			return 'assets/default-avatar.png';
+		}
+		return `data:image/jpeg;base64,${user.profilePicture}`;
 	}
 
 	logout() {

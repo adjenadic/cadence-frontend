@@ -5,10 +5,12 @@ import { CommonModule } from '@angular/common';
 import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 import { PrimeNG } from 'primeng/config';
 import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 @Component({
 	selector: 'app-root',
 	imports: [RouterModule, CommonModule, NavBarComponent, ToastModule],
+	providers: [MessageService],
 	templateUrl: './app.component.html',
 	styleUrl: './app.component.css',
 })

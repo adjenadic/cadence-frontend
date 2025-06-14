@@ -4,6 +4,7 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { VerifyEmailComponent } from './components/verify-email/verify-email.component';
+import { ConfigComponent } from './components/profile/config/config.component';
 
 export const routes: Routes = [
 	{
@@ -29,5 +30,9 @@ export const routes: Routes = [
 	{
 		component: ProfileComponent,
 		path: 'profile/:username',
+	},
+	{
+		component: ConfigComponent,
+		path: 'profile/:username/config',
 	},
 ];

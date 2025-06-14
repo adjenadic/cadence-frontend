@@ -1,21 +1,40 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
+
+import { CardModule } from 'primeng/card';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { AvatarModule } from 'primeng/avatar';
+import { ChipModule } from 'primeng/chip';
+import { DividerModule } from 'primeng/divider';
+import { SkeletonModule } from 'primeng/skeleton';
+import { ToastModule } from 'primeng/toast';
+import { TooltipModule } from 'primeng/tooltip';
+
 import { UserService } from '../../services/user-service/user.service';
 import { AuthService } from '../../services/user-service/auth.service';
+import { MessageService } from 'primeng/api';
+import { ErrorHandlingService } from '../../services/error-handling-service/error-handling.service';
 import { ResponseUserDto } from '../../dtos/response-user-dto';
-import { RequestUpdateUsernameDto } from '../../dtos/request-update-username-dto';
-import { RequestUpdateEmailDto } from '../../dtos/request-update-email-dto';
-import { RequestUpdatePronounsDto } from '../../dtos/request-update-pronouns-dto';
-import { RequestUpdateAboutMeDto } from '../../dtos/request-update-about-me-dto';
 import { RequestUpdateProfilePictureDto } from '../../dtos/request-update-profile-picture-dto';
 
 @Component({
 	selector: 'app-profile',
-	standalone: true, // Mark as standalone if it's not already
-	imports: [CommonModule, FormsModule],
+	standalone: true,
+	imports: [
+		CommonModule,
+		CardModule,
+		ButtonModule,
+		InputTextModule,
+		AvatarModule,
+		ChipModule,
+		DividerModule,
+		SkeletonModule,
+		ToastModule,
+		TooltipModule,
+	],
 	templateUrl: './profile.component.html',
 	styleUrl: './profile.component.css',
 })
@@ -25,44 +44,42 @@ export class ProfileComponent implements OnInit, OnDestroy {
 	isOwnProfile = false;
 	isLoading = true;
 
-	// Explicitly define the properties to allow dot notation access in the template
-	editMode: {
-		username: boolean;
-		email: boolean;
-		pronouns: boolean;
-		aboutMe: boolean;
-	} = {
-		username: false,
-		email: false,
-		pronouns: false,
-		aboutMe: false,
-	};
-
-	// Explicitly define the properties for editValues, making them optional initially
-	editValues: {
-		username?: string;
-		email?: string;
-		pronouns?: string;
-		aboutMe?: string;
-	} = {};
-
 	private destroy$ = new Subject<void>();
 
 	constructor(
 		private route: ActivatedRoute,
+		private router: Router,
 		private userService: UserService,
 		private authService: AuthService,
+		private messageService: MessageService,
+		private errorHandlingService: ErrorHandlingService,
 	) {}
 
 	ngOnInit() {
-		this.route.params.pipe(takeUntil(this.destroy$)).subscribe(params => {
-			const username = params['username'];
-			if (username) {
-				this.loadUserProfile(username);
-			}
-		});
+		this.authService
+			.getCurrentUser()
+			.pipe(takeUntil(this.destroy$))
+			.subscribe(currentUser => {
+				this.currentUser = currentUser;
 
-		this.loadCurrentUser();
+				this.route.params
+					.pipe(takeUntil(this.destroy$))
+					.subscribe(params => {
+						const username = params['username'];
+						if (username) {
+							if (
+								currentUser &&
+								currentUser.username === username
+							) {
+								this.user = currentUser;
+								this.isOwnProfile = true;
+								this.isLoading = false;
+							} else {
+								this.loadUserProfile(username);
+							}
+						}
+					});
+			});
 	}
 
 	ngOnDestroy() {
@@ -80,28 +97,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
 					this.user = user;
 					this.isLoading = false;
 					this.checkIfOwnProfile();
-					// Initialize editValues with current user data AFTER user is loaded
-					if (this.user) {
-						this.editValues.username = this.user.username;
-						this.editValues.email = this.user.email;
-						this.editValues.pronouns = this.user.pronouns;
-						this.editValues.aboutMe = this.user.aboutMe;
-					}
 				},
 				error: () => {
 					this.isLoading = false;
-					this.user = null; // Set user to null on error to show "User not found"
+					this.user = null;
 				},
-			});
-	}
-
-	loadCurrentUser() {
-		this.authService
-			.getCurrentUser()
-			.pipe(takeUntil(this.destroy$))
-			.subscribe(currentUser => {
-				this.currentUser = currentUser;
-				this.checkIfOwnProfile();
 			});
 	}
 
@@ -113,93 +113,20 @@ export class ProfileComponent implements OnInit, OnDestroy {
 		);
 	}
 
-	// Use 'keyof typeof this.editMode' for better type safety
-	startEdit(field: keyof typeof this.editMode) {
-		if (!this.isOwnProfile || !this.user) return;
-
-		this.editMode[field] = true;
-		// Safely assign the user's current value to the edit field
-		// Cast 'this.user' to 'any' if ResponseUserDto doesn't explicitly declare these properties as string
-		this.editValues[field] = (this.user as any)[field];
+	getProfilePictureUrl(): string {
+		if (!this.user?.profilePicture) {
+			return 'assets/default-avatar.png';
+		}
+		return `data:image/jpeg;base64,${this.user.profilePicture}`;
 	}
 
-	// Use 'keyof typeof this.editMode' for better type safety
-	cancelEdit(field: keyof typeof this.editMode) {
-		this.editMode[field] = false;
-		// Revert to the original value from the user object
-		if (this.user) {
-			this.editValues[field] = (this.user as any)[field];
-		} else {
-			// If user is somehow null, clear the edit value
-			delete this.editValues[field];
+	navigateToEditProfile() {
+		if (this.isOwnProfile && this.user) {
+			this.router.navigate(['/profile', this.user.username, 'edit']);
 		}
-	}
-
-	// Use 'keyof typeof this.editMode' for better type safety
-	saveEdit(field: keyof typeof this.editMode) {
-		// Ensure user exists and the field has a value before proceeding
-		if (!this.user || this.editValues[field] === undefined) return;
-
-		// Use non-null assertion '!' as we've checked for undefined/null
-		const value = this.editValues[field]!;
-		let request: any;
-		let updateMethod: any;
-
-		// Assuming user.email is always available if this.user is not null
-		switch (field) {
-			case 'username':
-				request = {
-					email: this.user.email,
-					username: value,
-				} as RequestUpdateUsernameDto;
-				updateMethod = this.userService.putUpdateUsername(request);
-				break;
-			case 'email':
-				request = {
-					currentEmail: this.user.email,
-					updatedEmail: value,
-				} as RequestUpdateEmailDto;
-				updateMethod = this.userService.putUpdateEmail(request);
-				break;
-			case 'pronouns':
-				request = {
-					email: this.user.email,
-					pronouns: value,
-				} as RequestUpdatePronounsDto;
-				updateMethod = this.userService.putUpdatePronouns(request);
-				break;
-			case 'aboutMe':
-				request = {
-					email: this.user.email,
-					aboutMe: value,
-				} as RequestUpdateAboutMeDto;
-				updateMethod = this.userService.putUpdateAboutMe(request);
-				break;
-			default:
-				return;
-		}
-
-		updateMethod.pipe(takeUntil(this.destroy$)).subscribe({
-			next: (updatedUser: ResponseUserDto) => {
-				this.user = updatedUser; // Update the user object with the fresh data
-				this.editMode[field] = false; // Exit edit mode for this field
-				// Re-initialize editValues with the new user data to ensure consistency
-				if (this.user) {
-					this.editValues.username = this.user.username;
-					this.editValues.email = this.user.email;
-					this.editValues.pronouns = this.user.pronouns;
-					this.editValues.aboutMe = this.user.aboutMe;
-				}
-			},
-			error: (error: any) => {
-				console.error('Update failed:', error);
-				// Consider reverting editMode and editValues on error if desired
-			},
-		});
 	}
 
 	onFileSelected(event: any) {
-		// Ensure user and file exist and it's the own profile
 		if (!this.isOwnProfile || !this.user || !event.target.files?.length)
 			return;
 
@@ -209,7 +136,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 		reader.onload = e => {
 			const base64String = (e.target?.result as string).split(',')[1];
 			const request: RequestUpdateProfilePictureDto = {
-				email: this.user!.email, // Use non-null assertion for user.email
+				email: this.user!.email,
 				profilePicture: base64String,
 			};
 
@@ -218,10 +145,22 @@ export class ProfileComponent implements OnInit, OnDestroy {
 				.pipe(takeUntil(this.destroy$))
 				.subscribe({
 					next: updatedUser => {
-						this.user = updatedUser; // Update the user object with the new profile picture
+						this.user = updatedUser;
+						this.messageService.add({
+							severity: 'success',
+							summary: 'Profile picture updated successfully',
+						});
 					},
 					error: error => {
-						console.error('Profile picture update failed:', error);
+						const errorMessage =
+							this.errorHandlingService.extractErrorMessage(
+								error,
+							);
+						this.messageService.add({
+							severity: 'error',
+							summary: 'Profile picture update failed',
+							detail: errorMessage,
+						});
 					},
 				});
 		};
@@ -235,5 +174,36 @@ export class ProfileComponent implements OnInit, OnDestroy {
 			) as HTMLInputElement;
 			fileInput?.click();
 		}
+	}
+
+	deleteProfilePicture() {
+		if (!this.isOwnProfile || !this.user) return;
+
+		const request: RequestUpdateProfilePictureDto = {
+			email: this.user.email,
+			profilePicture: '',
+		};
+
+		this.userService
+			.putUpdateProfilePicture(request)
+			.pipe(takeUntil(this.destroy$))
+			.subscribe({
+				next: updatedUser => {
+					this.user = updatedUser;
+					this.messageService.add({
+						severity: 'success',
+						summary: 'Profile picture removed successfully',
+					});
+				},
+				error: error => {
+					const errorMessage =
+						this.errorHandlingService.extractErrorMessage(error);
+					this.messageService.add({
+						severity: 'error',
+						summary: 'Failed to remove profile picture',
+						detail: errorMessage,
+					});
+				},
+			});
 	}
 }
