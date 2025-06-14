@@ -8,12 +8,16 @@ import { RequestLoginDto } from '../../dtos/request-login-dto';
 import { jwtDecode } from 'jwt-decode';
 import { ResponseUserDto } from '../../dtos/response-user-dto';
 import { of } from 'rxjs';
+import { UserService } from './user.service';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class AuthService {
-	constructor(private httpClient: HttpClient) {}
+	constructor(
+		private httpClient: HttpClient,
+		private userService: UserService,
+	) {}
 
 	postLogin(request: RequestLoginDto) {
 		return this.httpClient.post<TokenDto>(
@@ -68,15 +72,9 @@ export class AuthService {
 		return decoded?.sub || null;
 	}
 
-	getUserByUsername(username: string): Observable<ResponseUserDto> {
-		return this.httpClient.get<ResponseUserDto>(
-			environment.userServiceApiUrl + '/api/users/username/' + username,
-		);
-	}
-
 	getCurrentUser(): Observable<ResponseUserDto | null> {
 		const username = this.getUsername();
 		if (!username) return of(null);
-		return this.getUserByUsername(username);
+		return this.userService.getFindUserByEmail(username);
 	}
 }

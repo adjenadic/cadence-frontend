@@ -1,1 +1,234 @@
-<p>profile works!</p>
+<div class="profile-container">
+	<div
+		*ngIf="isLoading"
+		class="loading"
+	>
+		<div class="spinner"></div>
+		<p>Loading profile...</p>
+	</div>
+
+	<div
+		*ngIf="!isLoading && user"
+		class="profile-content"
+	>
+		<div class="profile-header">
+			<div
+				class="profile-picture-container"
+				[class.editable]="isOwnProfile"
+				(click)="triggerFileUpload()"
+			>
+				<img
+					[src]="user.profilePicture || '/assets/default-avatar.png'"
+					[alt]="(user.username || 'User') + ' profile picture'"
+					class="profile-picture"
+				/>
+				<div
+					*ngIf="isOwnProfile"
+					class="upload-overlay"
+				>
+					<span>Change Photo</span>
+				</div>
+			</div>
+
+			<div class="profile-info">
+				<div class="field-group">
+					<label>Username</label>
+					<div
+						*ngIf="!editMode.username"
+						class="field-display"
+					>
+						<span class="field-value">{{ user.username }}</span>
+						<button
+							*ngIf="isOwnProfile"
+							class="edit-btn"
+							(click)="startEdit('username')"
+						>
+							Edit
+						</button>
+					</div>
+					<div
+						*ngIf="editMode.username"
+						class="field-edit"
+					>
+						<input
+							type="text"
+							[(ngModel)]="editValues.username"
+							class="edit-input"
+						/>
+						<button
+							class="save-btn"
+							(click)="saveEdit('username')"
+						>
+							Save
+						</button>
+						<button
+							class="cancel-btn"
+							(click)="cancelEdit('username')"
+						>
+							Cancel
+						</button>
+					</div>
+				</div>
+
+				<div class="field-group">
+					<label>Email</label>
+					<div
+						*ngIf="!editMode.email"
+						class="field-display"
+					>
+						<span class="field-value">{{ user.email }}</span>
+						<button
+							*ngIf="isOwnProfile"
+							class="edit-btn"
+							(click)="startEdit('email')"
+						>
+							Edit
+						</button>
+					</div>
+					<div
+						*ngIf="editMode.email"
+						class="field-edit"
+					>
+						<input
+							type="email"
+							[(ngModel)]="editValues.email"
+							class="edit-input"
+						/>
+						<button
+							class="save-btn"
+							(click)="saveEdit('email')"
+						>
+							Save
+						</button>
+						<button
+							class="cancel-btn"
+							(click)="cancelEdit('email')"
+						>
+							Cancel
+						</button>
+					</div>
+				</div>
+
+				<div class="field-group">
+					<label>Pronouns</label>
+					<div
+						*ngIf="!editMode.pronouns"
+						class="field-display"
+					>
+						<span class="field-value">{{
+							user.pronouns || 'Not specified'
+						}}</span>
+						<button
+							*ngIf="isOwnProfile"
+							class="edit-btn"
+							(click)="startEdit('pronouns')"
+						>
+							Edit
+						</button>
+					</div>
+					<div
+						*ngIf="editMode.pronouns"
+						class="field-edit"
+					>
+						<input
+							type="text"
+							[(ngModel)]="editValues.pronouns"
+							class="edit-input"
+							placeholder="e.g., they/them, she/her, he/him"
+						/>
+						<button
+							class="save-btn"
+							(click)="saveEdit('pronouns')"
+						>
+							Save
+						</button>
+						<button
+							class="cancel-btn"
+							(click)="cancelEdit('pronouns')"
+						>
+							Cancel
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="profile-body">
+			<div class="field-group about-me">
+				<label>About Me</label>
+				<div
+					*ngIf="!editMode.aboutMe"
+					class="field-display"
+				>
+					<p class="field-value about-text">
+						{{ user.aboutMe || 'No description provided.' }}
+					</p>
+					<button
+						*ngIf="isOwnProfile"
+						class="edit-btn"
+						(click)="startEdit('aboutMe')"
+					>
+						Edit
+					</button>
+				</div>
+				<div
+					*ngIf="editMode.aboutMe"
+					class="field-edit"
+				>
+					<textarea
+						[(ngModel)]="editValues.aboutMe"
+						class="edit-textarea"
+						rows="4"
+						placeholder="Tell us about yourself..."
+					></textarea>
+					<div class="button-group">
+						<button
+							class="save-btn"
+							(click)="saveEdit('aboutMe')"
+						>
+							Save
+						</button>
+						<button
+							class="cancel-btn"
+							(click)="cancelEdit('aboutMe')"
+						>
+							Cancel
+						</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="field-group permissions">
+				<label>Permissions</label>
+				<div class="permissions-list">
+					<span
+						*ngFor="let permission of user.permissions"
+						class="permission-badge"
+						>{{ permission }}</span
+					>
+					<span
+						*ngIf="user.permissions.length === 0"
+						class="no-permissions"
+						>No special permissions</span
+					>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div
+		*ngIf="!isLoading && !user"
+		class="error-message"
+	>
+		<h2>User not found</h2>
+		<p>The requested profile could not be found.</p>
+	</div>
+
+	<input
+		type="file"
+		id="fileInput"
+		(change)="onFileSelected($event)"
+		accept="image/*"
+		style="display: none"
+	/>
+</div>

@@ -10,8 +10,8 @@ export const ApiEndpoints = {
 		// GET
 		getAll: 'users/all',
 		getById: 'users',
-		getByEmail: 'users',
-		getByUsername: 'users',
+		getByEmail: 'users/email',
+		getByUsername: 'users/username',
 		// POST
 		postCreate: 'users/create',
 		postVerifyEmail: 'users/verify-email?verificationToken=',

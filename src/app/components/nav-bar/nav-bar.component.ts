@@ -9,6 +9,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../services/user-service/auth.service';
+import { ResponseUserDto } from '../../dtos/response-user-dto';
 
 @Component({
 	selector: 'app-nav-bar',
@@ -31,7 +32,7 @@ export class NavBarComponent implements OnInit {
 	isScrolled = false;
 	isAuthenticated = false;
 	userMenuItems: MenuItem[] | undefined;
-	currentUser: any = null;
+	currentUser: ResponseUserDto | null = null;
 	userProfileImage: string = 'assets/default-avatar.png';
 
 	constructor(private authService: AuthService) {}
@@ -46,8 +47,9 @@ export class NavBarComponent implements OnInit {
 			this.isAuthenticated = isAuth;
 			if (isAuth) {
 				this.loadCurrentUser();
+			} else {
+				this.updateUserMenu();
 			}
-			this.updateUserMenu();
 		});
 
 		this.items = [
@@ -81,17 +83,15 @@ export class NavBarComponent implements OnInit {
 				],
 			},
 		];
-
-		this.updateUserMenu();
 	}
 
 	updateUserMenu() {
-		if (this.isAuthenticated) {
+		if (this.isAuthenticated && this.currentUser?.username) {
 			this.userMenuItems = [
 				{
 					label: 'Profile',
 					icon: 'pi pi-user',
-					routerLink: ['/profile'],
+					routerLink: ['/profile', this.currentUser.username],
 				},
 				{
 					label: 'Log out',
@@ -107,6 +107,7 @@ export class NavBarComponent implements OnInit {
 			this.currentUser = user;
 			this.userProfileImage =
 				user?.profilePicture || 'assets/default-avatar.png';
+			this.updateUserMenu();
 		});
 	}
 
