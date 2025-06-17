@@ -122,7 +122,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
 	navigateToEditProfile() {
 		if (this.isOwnProfile && this.user) {
-			this.router.navigate(['/profile', this.user.username, 'edit']);
+			this.router.navigate(['/profile', this.user.username, 'config']);
 		}
 	}
 
@@ -131,10 +131,39 @@ export class ProfileComponent implements OnInit, OnDestroy {
 			return;
 
 		const file = event.target.files[0];
+
+		if (file.size > 5 * 1024 * 1024) {
+			this.messageService.add({
+				severity: 'error',
+				summary: 'File too large',
+				detail: 'Please select an image smaller than 5MB',
+			});
+			return;
+		}
+
+		if (!file.type.startsWith('image/')) {
+			this.messageService.add({
+				severity: 'error',
+				summary: 'Invalid file type',
+				detail: 'Please select an image file',
+			});
+			return;
+		}
+
 		const reader = new FileReader();
 
 		reader.onload = e => {
-			const base64String = (e.target?.result as string).split(',')[1];
+			const result = e.target?.result as string;
+			if (!result || !result.includes(',')) {
+				this.messageService.add({
+					severity: 'error',
+					summary: 'Failed to process image',
+					detail: 'Could not read the selected file',
+				});
+				return;
+			}
+
+			const base64String = result.split(',')[1];
 			const request: RequestUpdateProfilePictureDto = {
 				email: this.user!.email,
 				profilePicture: base64String,
@@ -146,6 +175,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 				.subscribe({
 					next: updatedUser => {
 						this.user = updatedUser;
+						this.authService.refreshCurrentUser();
 						this.messageService.add({
 							severity: 'success',
 							summary: 'Profile picture updated successfully',
@@ -164,6 +194,15 @@ export class ProfileComponent implements OnInit, OnDestroy {
 					},
 				});
 		};
+
+		reader.onerror = () => {
+			this.messageService.add({
+				severity: 'error',
+				summary: 'File read error',
+				detail: 'Could not read the selected file',
+			});
+		};
+
 		reader.readAsDataURL(file);
 	}
 
@@ -190,6 +229,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 			.subscribe({
 				next: updatedUser => {
 					this.user = updatedUser;
+					this.authService.refreshCurrentUser();
 					this.messageService.add({
 						severity: 'success',
 						summary: 'Profile picture removed successfully',

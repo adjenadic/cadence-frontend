@@ -1,1 +1,316 @@
-<p>config works!</p>
+<div class="config-container">
+	<div class="config-header">
+		<button
+			pButton
+			icon="pi pi-arrow-left"
+			label="Back to Profile"
+			class="p-button-text back-button"
+			(click)="navigateBack()"
+		></button>
+		<h1 class="page-title">Account Settings</h1>
+	</div>
+
+	<div class="config-layout">
+		<!-- Email Section -->
+		<div class="section">
+			<h3 class="section-title">
+				<i class="pi pi-envelope"></i>
+				Email Address
+			</h3>
+
+			<form
+				[formGroup]="emailForm"
+				(ngSubmit)="saveEmail()"
+			>
+				<div class="form-field">
+					<label>Current Email</label>
+					<input
+						pInputText
+						formControlName="currentEmail"
+						placeholder="Current email address"
+						readonly
+					/>
+				</div>
+
+				<div class="form-field">
+					<label>New Email</label>
+					<input
+						pInputText
+						formControlName="updatedEmail"
+						placeholder="Enter new email address"
+					/>
+					<small
+						*ngIf="
+							emailForm.get('updatedEmail')?.invalid &&
+							emailForm.get('updatedEmail')?.touched
+						"
+						class="p-error"
+					>
+						Please enter a valid email address.
+					</small>
+				</div>
+
+				<div class="info-box">
+					<i class="pi pi-info-circle"></i>
+					<span class="p-info"
+						>Changing your email will log you out and require
+						verification of your new address before you can sign in
+						again.</span
+					>
+				</div>
+
+				<div class="form-actions">
+					<button
+						pButton
+						type="submit"
+						label="Update Email"
+						icon="pi pi-save"
+						[loading]="savingStates.email"
+						[disabled]="emailForm.invalid || savingStates.email"
+						class="save-button"
+					></button>
+				</div>
+			</form>
+		</div>
+
+		<!-- Username Section -->
+		<div class="section">
+			<h3 class="section-title">
+				<i class="pi pi-user"></i>
+				Username
+			</h3>
+
+			<form
+				[formGroup]="usernameForm"
+				(ngSubmit)="saveUsername()"
+			>
+				<div class="form-field">
+					<label>Username</label>
+					<input
+						pInputText
+						formControlName="username"
+						placeholder="Enter your username"
+					/>
+					<small
+						*ngIf="
+							usernameForm.get('username')?.invalid &&
+							usernameForm.get('username')?.touched
+						"
+						class="p-error"
+					>
+						Username may only contain lowercase letters, numbers,
+						and periods.
+					</small>
+				</div>
+
+				<div class="form-actions">
+					<button
+						pButton
+						type="submit"
+						label="Update Username"
+						icon="pi pi-save"
+						[loading]="savingStates.username"
+						[disabled]="
+							usernameForm.invalid ||
+							savingStates.username ||
+							isUsernameUnchanged
+						"
+						class="save-button"
+					></button>
+				</div>
+			</form>
+		</div>
+
+		<!-- Password Section -->
+		<div class="section">
+			<h3 class="section-title">
+				<i class="pi pi-lock"></i>
+				Password
+			</h3>
+
+			<form
+				[formGroup]="passwordForm"
+				(ngSubmit)="savePassword()"
+			>
+				<div class="form-field">
+					<label>Current Password</label>
+					<p-password
+						formControlName="currentPassword"
+						[feedback]="false"
+						[toggleMask]="true"
+						placeholder="Enter current password"
+						styleClass="w-full"
+					></p-password>
+				</div>
+
+				<div class="form-field">
+					<label>New Password</label>
+					<p-password
+						formControlName="updatedPassword"
+						[toggleMask]="true"
+						placeholder="Enter new password"
+						styleClass="w-full"
+					></p-password>
+					<small
+						*ngIf="
+							passwordForm.get('updatedPassword')?.invalid &&
+							passwordForm.get('updatedPassword')?.touched
+						"
+						class="p-error"
+					>
+						Password must be at least 10 characters long.
+					</small>
+				</div>
+
+				<div class="form-field">
+					<label>Confirm New Password</label>
+					<p-password
+						formControlName="updatedPasswordConfirmation"
+						[feedback]="false"
+						[toggleMask]="true"
+						placeholder="Confirm new password"
+						styleClass="w-full"
+					></p-password>
+					<small
+						*ngIf="
+							passwordForm.hasError('passwordMismatch') &&
+							passwordForm.get('updatedPasswordConfirmation')
+								?.touched
+						"
+						class="p-error"
+					>
+						Passwords do not match.
+					</small>
+				</div>
+
+				<div class="info-box">
+					<i class="pi pi-info-circle"></i>
+					<span class="p-info">
+						Changing your password will log you out for security.
+						You'll need to sign in again with your new
+						password.</span
+					>
+				</div>
+
+				<div class="form-actions">
+					<button
+						pButton
+						type="submit"
+						label="Update Password"
+						icon="pi pi-save"
+						[loading]="savingStates.password"
+						[disabled]="
+							!passwordForm.get('currentPassword')?.value ||
+							!passwordForm.get('updatedPassword')?.value ||
+							!passwordForm.get('updatedPasswordConfirmation')
+								?.value ||
+							passwordForm.invalid ||
+							savingStates.password
+						"
+						class="save-button"
+					></button>
+				</div>
+			</form>
+		</div>
+
+		<!-- Pronouns Section -->
+		<div class="section">
+			<h3 class="section-title">
+				<i class="pi pi-users"></i>
+				Pronouns
+			</h3>
+
+			<form
+				[formGroup]="pronounsForm"
+				(ngSubmit)="savePronouns()"
+			>
+				<div class="form-field">
+					<label>Pronouns (optional)</label>
+					<input
+						pInputText
+						formControlName="pronouns"
+						placeholder="e.g., they/them, she/her, he/him"
+					/>
+					<small
+						*ngIf="
+							pronounsForm.get('pronouns')?.invalid &&
+							pronounsForm.get('pronouns')?.touched
+						"
+						class="p-error"
+					>
+						Pronouns must be 50 characters or less.
+					</small>
+				</div>
+
+				<div class="form-actions">
+					<button
+						pButton
+						type="submit"
+						label="Save Pronouns"
+						icon="pi pi-save"
+						[loading]="savingStates.pronouns"
+						[disabled]="
+							pronounsForm.invalid ||
+							savingStates.pronouns ||
+							isPronounsUnchanged
+						"
+						class="save-button"
+					></button>
+				</div>
+			</form>
+		</div>
+
+		<!-- About Me Section -->
+		<div class="section">
+			<h3 class="section-title">
+				<i class="pi pi-file-edit"></i>
+				About Me
+			</h3>
+
+			<form
+				[formGroup]="aboutMeForm"
+				(ngSubmit)="saveAboutMe()"
+			>
+				<div class="form-field">
+					<label>About Me (optional)</label>
+					<textarea
+						rows="5"
+						pTextarea
+						formControlName="aboutMe"
+						placeholder="Tell us about yourself..."
+					></textarea>
+					<div class="character-info">
+						<small class="character-counter"
+							>{{ aboutMeCharacterCount }}/512 characters</small
+						>
+						<small
+							*ngIf="
+								aboutMeForm.get('aboutMe')?.invalid &&
+								aboutMeForm.get('aboutMe')?.touched
+							"
+							class="p-error"
+						>
+							About me must be 512 characters or less.
+						</small>
+					</div>
+				</div>
+
+				<div class="form-actions">
+					<button
+						pButton
+						type="submit"
+						label="Save About Me"
+						icon="pi pi-save"
+						[loading]="savingStates.aboutMe"
+						[disabled]="
+							aboutMeForm.invalid ||
+							savingStates.aboutMe ||
+							isAboutMeUnchanged
+						"
+						class="save-button"
+					></button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

@@ -51,7 +51,10 @@ export class RegisterComponent {
 				confirmedPassword: ['', Validators.required],
 			},
 			{
-				validators: passwordMatchValidator,
+				validators: passwordMatchValidator(
+					'password',
+					'confirmedPassword',
+				),
 			},
 		);
 	}

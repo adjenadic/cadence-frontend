@@ -7,8 +7,8 @@ import { TokenDto } from '../../dtos/token-dto';
 import { RequestLoginDto } from '../../dtos/request-login-dto';
 import { jwtDecode } from 'jwt-decode';
 import { ResponseUserDto } from '../../dtos/response-user-dto';
-import { of } from 'rxjs';
 import { UserService } from './user.service';
+import { Router } from '@angular/router';
 
 @Injectable({
 	providedIn: 'root',
@@ -17,7 +17,12 @@ export class AuthService {
 	constructor(
 		private httpClient: HttpClient,
 		private userService: UserService,
+		private router: Router,
 	) {}
+
+	private currentUserSubject = new BehaviorSubject<ResponseUserDto | null>(
+		null,
+	);
 
 	postLogin(request: RequestLoginDto) {
 		return this.httpClient.post<TokenDto>(
@@ -42,7 +47,9 @@ export class AuthService {
 
 	logout(): void {
 		localStorage.removeItem(this.JWT_TOKEN);
+		this.currentUserSubject.next(null);
 		this.isAuthenticatedSubject.next(false);
+		this.router.navigate(['/login']);
 	}
 
 	isAuthenticated(): Observable<boolean> {
@@ -74,7 +81,32 @@ export class AuthService {
 
 	getCurrentUser(): Observable<ResponseUserDto | null> {
 		const username = this.getUsername();
-		if (!username) return of(null);
-		return this.userService.getFindUserByEmail(username);
+		if (!username) {
+			this.currentUserSubject.next(null);
+			return this.currentUserSubject.asObservable();
+		}
+
+		if (!this.currentUserSubject.value) {
+			this.loadCurrentUser();
+		}
+
+		return this.currentUserSubject.asObservable();
+	}
+
+	refreshCurrentUser(): void {
+		this.loadCurrentUser();
+	}
+
+	private loadCurrentUser(): void {
+		const username = this.getUsername();
+		if (!username) {
+			this.currentUserSubject.next(null);
+			return;
+		}
+
+		this.userService.getFindUserByEmail(username).subscribe({
+			next: user => this.currentUserSubject.next(user),
+			error: () => this.currentUserSubject.next(null),
+		});
 	}
 }

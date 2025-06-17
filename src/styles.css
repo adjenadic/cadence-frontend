@@ -4,3 +4,129 @@
 body {
 	font-family: 'Inter', sans-serif;
 }
+
+/* Form Components */
+.form-field {
+	margin-bottom: 1.5rem;
+	text-align: left;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.form-field label {
+	display: block;
+	color: white;
+	margin-bottom: 0.5rem;
+	font-weight: 500;
+	font-size: 0.9rem;
+}
+
+/* Section Components */
+.section {
+	background: rgba(255, 255, 255, 0.03);
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	border-radius: 12px;
+	padding: 2rem;
+	backdrop-filter: blur(10px);
+	transition: all 0.3s ease;
+}
+
+.section:hover {
+	background: rgba(255, 255, 255, 0.035);
+	border-color: rgba(255, 255, 255, 0.15);
+	transform: translateY(-2px);
+}
+
+.section-title {
+	margin: 0 0 1.5rem 0;
+	color: #fff;
+	font-size: 1.4rem;
+	font-weight: 500;
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+/* Links & Prompts */
+.create-link {
+	margin-left: 0.5rem;
+	color: #3b82f6;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+.account-prompt {
+	margin-top: 2rem;
+	margin-bottom: 2rem;
+	color: #cccccc;
+}
+
+/* PrimeNG Global Overrides */
+.p-error {
+	color: #f44336 !important;
+	font-size: 0.8rem !important;
+	margin-top: 0.25rem !important;
+	display: block !important;
+}
+
+.p-info {
+	color: #ccc !important;
+	font-size: 0.8rem !important;
+	margin-top: 0.25rem !important;
+	display: block !important;
+}
+
+.p-inputtext,
+.p-inputtextarea,
+.p-password-input {
+	width: 100% !important;
+	background-color: #242424 !important;
+	color: white !important;
+	border: 1px solid #333 !important;
+	border-radius: 8px !important;
+	padding: 0.75rem !important;
+	transition: all 0.3s ease !important;
+}
+
+.p-inputtext:enabled:hover,
+.p-inputtextarea:enabled:hover,
+.p-password-input:enabled:hover {
+	border-color: rgba(255, 255, 255, 0.25) !important;
+	background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.p-inputtext:enabled:focus,
+.p-inputtextarea:enabled:focus,
+.p-password-input:enabled:focus {
+	box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15) !important;
+	background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.p-inputtext:read-only {
+	background: rgba(255, 255, 255, 0.02) !important;
+	color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* Custom */
+.info-box {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.75rem;
+	background-color: rgba(54, 158, 255, 0.1);
+	border: 1px solid rgba(54, 158, 255, 0.3);
+	border-radius: 4px;
+	color: rgba(255, 255, 255, 0.9);
+	font-size: 0.875rem;
+	margin-bottom: 1rem;
+}
+
+.info-box i {
+	color: #3b82f6;
+}
+
+/* Utilities */
+.w-full {
+	width: 100%;
+}

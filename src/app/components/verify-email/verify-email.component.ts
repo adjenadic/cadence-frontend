@@ -36,7 +36,7 @@ export class VerifyEmailComponent implements OnInit {
 						summary: 'Email verified successfully!',
 						detail: 'You can log in now!',
 					});
-					setTimeout(() => this.router.navigate(['/']), 3000);
+					setTimeout(() => this.router.navigate(['/login']), 3000);
 				},
 				error: error => {
 					if (error.status === 409) {
@@ -60,7 +60,7 @@ export class VerifyEmailComponent implements OnInit {
 							detail: errorMessage,
 						});
 					}
-					setTimeout(() => this.router.navigate(['/']), 3000);
+					setTimeout(() => this.router.navigate(['/login']), 3000);
 				},
 			});
 		}
