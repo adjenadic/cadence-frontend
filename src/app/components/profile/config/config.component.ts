@@ -16,6 +16,7 @@ import { DividerModule } from 'primeng/divider';
 import { ToastModule } from 'primeng/toast';
 import { PasswordModule } from 'primeng/password';
 import { TextareaModule } from 'primeng/textarea';
+import { CheckboxModule } from 'primeng/checkbox';
 
 import { UserService } from '../../../services/user-service/user.service';
 import { AuthService } from '../../../services/user-service/auth.service';
@@ -27,9 +28,11 @@ import { RequestUpdateUsernameDto } from '../../../dtos/request-update-username-
 import { RequestUpdatePasswordDto } from '../../../dtos/request-update-password-dto';
 import { RequestUpdatePronounsDto } from '../../../dtos/request-update-pronouns-dto';
 import { RequestUpdateAboutMeDto } from '../../../dtos/request-update-about-me-dto';
-import { usernameValidator } from '../../../validators/username.validator';
-import { passwordValidator } from '../../../validators/password.validator';
-import { passwordMatchValidator } from '../../../validators/password-match.validator';
+import { usernameValidator } from '../../../utils/validators/username.validator';
+import { passwordValidator } from '../../../utils/validators/password.validator';
+import { passwordMatchValidator } from '../../../utils/validators/password-match.validator';
+import { RequestUpdatePermissionsDto } from '../../../dtos/request-update-permissions-dto';
+import { PERMISSIONS_LIST } from '../../../utils/constants/permissions';
 
 @Component({
 	selector: 'app-config',
@@ -44,25 +47,29 @@ import { passwordMatchValidator } from '../../../validators/password-match.valid
 		PasswordModule,
 		DividerModule,
 		ToastModule,
+		CheckboxModule,
 	],
 	templateUrl: './config.component.html',
 	styleUrls: ['./config.component.css'],
 })
 export class ConfigComponent implements OnInit, OnDestroy {
 	currentUser: ResponseUserDto | null = null;
+	permissionsList = PERMISSIONS_LIST;
 
-	emailForm: FormGroup;
 	usernameForm: FormGroup;
-	passwordForm: FormGroup;
 	pronounsForm: FormGroup;
 	aboutMeForm: FormGroup;
+	emailForm: FormGroup;
+	passwordForm: FormGroup;
+	permissionsForm: FormGroup;
 
 	savingStates = {
-		email: false,
 		username: false,
-		password: false,
 		pronouns: false,
 		aboutMe: false,
+		email: false,
+		password: false,
+		permissions: false,
 	};
 
 	private destroy$ = new Subject<void>();
@@ -76,14 +83,24 @@ export class ConfigComponent implements OnInit, OnDestroy {
 		private messageService: MessageService,
 		private errorHandlingService: ErrorHandlingService,
 	) {
-		this.emailForm = this.fb.group({
-			currentEmail: ['', [Validators.required, Validators.email]],
-			updatedEmail: ['', [Validators.required, Validators.email]],
-		});
-
 		this.usernameForm = this.fb.group({
 			email: [''],
 			username: ['', usernameValidator()],
+		});
+
+		this.pronounsForm = this.fb.group({
+			email: [''],
+			pronouns: ['', [Validators.maxLength(50)]],
+		});
+
+		this.aboutMeForm = this.fb.group({
+			email: [''],
+			aboutMe: ['', [Validators.maxLength(512)]],
+		});
+
+		this.emailForm = this.fb.group({
+			currentEmail: ['', [Validators.required, Validators.email]],
+			updatedEmail: ['', [Validators.required, Validators.email]],
 		});
 
 		this.passwordForm = this.fb.group(
@@ -101,14 +118,9 @@ export class ConfigComponent implements OnInit, OnDestroy {
 			},
 		);
 
-		this.pronounsForm = this.fb.group({
+		this.permissionsForm = this.fb.group({
 			email: [''],
-			pronouns: ['', [Validators.maxLength(50)]],
-		});
-
-		this.aboutMeForm = this.fb.group({
-			email: [''],
-			aboutMe: ['', [Validators.maxLength(512)]],
+			permissions: [[]],
 		});
 	}
 
@@ -134,17 +146,9 @@ export class ConfigComponent implements OnInit, OnDestroy {
 	}
 
 	private populateForms(user: ResponseUserDto) {
-		this.emailForm.patchValue({
-			currentEmail: user.email,
-		});
-
 		this.usernameForm.patchValue({
 			email: user.email,
 			username: user.username,
-		});
-
-		this.passwordForm.patchValue({
-			email: user.email,
 		});
 
 		this.pronounsForm.patchValue({
@@ -156,49 +160,24 @@ export class ConfigComponent implements OnInit, OnDestroy {
 			email: user.email,
 			aboutMe: user.aboutMe || '',
 		});
+
+		this.emailForm.patchValue({
+			currentEmail: user.email,
+		});
+
+		this.passwordForm.patchValue({
+			email: user.email,
+		});
+
+		this.permissionsForm.patchValue({
+			email: user.email,
+			permissions: user.permissions || [],
+		});
 	}
 
 	navigateBack() {
 		if (this.currentUser) {
 			this.router.navigate(['/profile', this.currentUser.username]);
-		}
-	}
-
-	saveEmail() {
-		if (this.emailForm.valid) {
-			this.savingStates.email = true;
-			const request: RequestUpdateEmailDto = this.emailForm.value;
-
-			this.userService
-				.putUpdateEmail(request)
-				.pipe(takeUntil(this.destroy$))
-				.subscribe({
-					next: () => {
-						this.savingStates.email = false;
-						this.messageService.add({
-							severity: 'info',
-							summary: 'Email Updated',
-							detail: "Verification email sent. You'll be logged out and must verify your new email before logging in again.",
-						});
-
-						setTimeout(() => {
-							this.authService.logout();
-							this.router.navigate(['/login']);
-						}, 500);
-					},
-					error: error => {
-						this.savingStates.email = false;
-						const errorMessage =
-							this.errorHandlingService.extractErrorMessage(
-								error,
-							);
-						this.messageService.add({
-							severity: 'error',
-							summary: 'Email update failed',
-							detail: errorMessage,
-						});
-					},
-				});
 		}
 	}
 
@@ -230,44 +209,6 @@ export class ConfigComponent implements OnInit, OnDestroy {
 						this.messageService.add({
 							severity: 'error',
 							summary: 'Username update failed',
-							detail: errorMessage,
-						});
-					},
-				});
-		}
-	}
-
-	savePassword() {
-		if (this.passwordForm.valid) {
-			this.savingStates.password = true;
-			const request: RequestUpdatePasswordDto = this.passwordForm.value;
-
-			this.userService
-				.putUpdatePassword(request)
-				.pipe(takeUntil(this.destroy$))
-				.subscribe({
-					next: () => {
-						this.savingStates.password = false;
-						this.messageService.add({
-							severity: 'info',
-							summary: 'Password Updated',
-							detail: "You'll be logged out for security. Please sign in with your new password.",
-						});
-
-						setTimeout(() => {
-							this.authService.logout();
-							this.router.navigate(['/login']);
-						}, 500);
-					},
-					error: error => {
-						this.savingStates.password = false;
-						const errorMessage =
-							this.errorHandlingService.extractErrorMessage(
-								error,
-							);
-						this.messageService.add({
-							severity: 'error',
-							summary: 'Password update failed',
 							detail: errorMessage,
 						});
 					},
@@ -345,6 +286,118 @@ export class ConfigComponent implements OnInit, OnDestroy {
 		}
 	}
 
+	saveEmail() {
+		if (this.emailForm.valid) {
+			this.savingStates.email = true;
+			const request: RequestUpdateEmailDto = this.emailForm.value;
+
+			this.userService
+				.putUpdateEmail(request)
+				.pipe(takeUntil(this.destroy$))
+				.subscribe({
+					next: () => {
+						this.savingStates.email = false;
+						this.messageService.add({
+							severity: 'info',
+							summary: 'Email Updated',
+							detail: "Verification email sent. You'll be logged out and must verify your new email before logging in again.",
+						});
+
+						setTimeout(() => {
+							this.authService.logout();
+							this.router.navigate(['/login']);
+						}, 500);
+					},
+					error: error => {
+						this.savingStates.email = false;
+						const errorMessage =
+							this.errorHandlingService.extractErrorMessage(
+								error,
+							);
+						this.messageService.add({
+							severity: 'error',
+							summary: 'Email update failed',
+							detail: errorMessage,
+						});
+					},
+				});
+		}
+	}
+
+	savePassword() {
+		if (this.passwordForm.valid) {
+			this.savingStates.password = true;
+			const request: RequestUpdatePasswordDto = this.passwordForm.value;
+
+			this.userService
+				.putUpdatePassword(request)
+				.pipe(takeUntil(this.destroy$))
+				.subscribe({
+					next: () => {
+						this.savingStates.password = false;
+						this.messageService.add({
+							severity: 'info',
+							summary: 'Password Updated',
+							detail: "You'll be logged out for security. Please sign in with your new password.",
+						});
+
+						setTimeout(() => {
+							this.authService.logout();
+							this.router.navigate(['/login']);
+						}, 500);
+					},
+					error: error => {
+						this.savingStates.password = false;
+						const errorMessage =
+							this.errorHandlingService.extractErrorMessage(
+								error,
+							);
+						this.messageService.add({
+							severity: 'error',
+							summary: 'Password update failed',
+							detail: errorMessage,
+						});
+					},
+				});
+		}
+	}
+
+	savePermissions() {
+		if (this.permissionsForm.valid) {
+			this.savingStates.permissions = true;
+			const request: RequestUpdatePermissionsDto =
+				this.permissionsForm.value;
+
+			this.userService
+				.putUpdatePermissions(request)
+				.pipe(takeUntil(this.destroy$))
+				.subscribe({
+					next: () => {
+						this.savingStates.permissions = false;
+						this.permissionsForm.markAsUntouched();
+						this.permissionsForm.markAsPristine();
+						this.authService.refreshCurrentUser();
+						this.messageService.add({
+							severity: 'success',
+							summary: 'Permissions updated successfully',
+						});
+					},
+					error: error => {
+						this.savingStates.permissions = false;
+						const errorMessage =
+							this.errorHandlingService.extractErrorMessage(
+								error,
+							);
+						this.messageService.add({
+							severity: 'error',
+							summary: 'Permissions update failed',
+							detail: errorMessage,
+						});
+					},
+				});
+		}
+	}
+
 	get isUsernameUnchanged(): boolean {
 		const currentUsername = this.usernameForm.get('username')?.value;
 		return currentUsername === this.currentUser?.username;
@@ -360,7 +413,35 @@ export class ConfigComponent implements OnInit, OnDestroy {
 		return currentAboutMe === (this.currentUser?.aboutMe || '');
 	}
 
+	get isPermissionsUnchanged(): boolean {
+		const currentPermissions =
+			this.permissionsForm.get('permissions')?.value;
+		const originalPermissions = this.currentUser?.permissions || [];
+		return (
+			JSON.stringify(currentPermissions?.sort()) ===
+			JSON.stringify(originalPermissions?.sort())
+		);
+	}
+
 	get aboutMeCharacterCount(): number {
 		return this.aboutMeForm.get('aboutMe')?.value?.length || 0;
+	}
+
+	get canEditUsername(): boolean {
+		return !!(
+			this.currentUser?.permissions?.includes('MANAGE_USERNAMES') ||
+			this.currentUser?.permissions?.includes('MANAGE_PERMISSIONS')
+		);
+	}
+
+	get canEditPermissions(): boolean {
+		return !!this.currentUser?.permissions?.includes('MANAGE_PERMISSIONS');
+	}
+
+	formatPermissionLabel(permission: string): string {
+		return permission
+			.replace(/_/g, ' ')
+			.toLowerCase()
+			.replace(/\b\w/g, l => l.toUpperCase());
 	}
 }

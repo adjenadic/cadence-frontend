@@ -14,9 +14,9 @@ import { UserService } from '../../services/user-service/user.service';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { RouterModule } from '@angular/router';
-import { usernameValidator } from '../../validators/username.validator';
-import { passwordValidator } from '../../validators/password.validator';
-import { passwordMatchValidator } from '../../validators/password-match.validator';
+import { usernameValidator } from '../../utils/validators/username.validator';
+import { passwordValidator } from '../../utils/validators/password.validator';
+import { passwordMatchValidator } from '../../utils/validators/password-match.validator';
 
 @Component({
 	selector: 'app-register',

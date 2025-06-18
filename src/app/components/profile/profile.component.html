@@ -75,7 +75,7 @@
 				<div class="username-section">
 					<h1 class="username">{{ user.username }}</h1>
 					<button
-						*ngIf="isOwnProfile"
+						*ngIf="canEditProfile()"
 						pButton
 						label="Edit Profile"
 						icon="pi pi-pencil"
@@ -86,30 +86,22 @@
 
 				<!-- Basic Details -->
 				<div class="profile-details">
-					<div class="detail-item">
-						<i class="pi pi-envelope"></i>
-						<span>{{ user.email }}</span>
-					</div>
-
 					<div
 						class="detail-item"
 						*ngIf="user.pronouns"
 					>
-						<i class="pi pi-user"></i>
+						<i class="pi pi-asterisk"></i>
 						<span>{{ user.pronouns }}</span>
 					</div>
-				</div>
-			</div>
-		</div>
 
-		<!-- About Section -->
-		<div
-			class="section"
-			*ngIf="user.aboutMe"
-		>
-			<h3 class="section-title">About</h3>
-			<div class="about-content">
-				<p class="about-text">{{ user.aboutMe }}</p>
+					<div
+						class="detail-item"
+						*ngIf="user.aboutMe"
+					>
+						<i class="pi"></i>
+						<span>{{ user.aboutMe }}</span>
+					</div>
+				</div>
 			</div>
 		</div>
 
@@ -122,7 +114,7 @@
 			<div class="permissions-content">
 				<p-chip
 					*ngFor="let permission of user.permissions"
-					[label]="permission"
+					[label]="formatPermissionLabel(permission)"
 					icon="pi pi-shield"
 					class="permission-chip"
 				></p-chip>

@@ -14,35 +14,32 @@ import { Router } from '@angular/router';
 	providedIn: 'root',
 })
 export class AuthService {
+	private readonly JWT_TOKEN = 'JWT_TOKEN';
+	private currentUserSubject = new BehaviorSubject<ResponseUserDto | null>(
+		null,
+	);
+	private isAuthenticatedSubject = new BehaviorSubject<boolean>(
+		!!localStorage.getItem(this.JWT_TOKEN),
+	);
+
 	constructor(
 		private httpClient: HttpClient,
 		private userService: UserService,
 		private router: Router,
 	) {}
 
-	private currentUserSubject = new BehaviorSubject<ResponseUserDto | null>(
-		null,
-	);
-
-	postLogin(request: RequestLoginDto) {
-		return this.httpClient.post<TokenDto>(
-			environment.userServiceApiUrl + ApiEndpoints.auth.postLogin,
-			request,
-		);
-	}
-
-	private readonly JWT_TOKEN = 'JWT_TOKEN';
-	private isAuthenticatedSubject = new BehaviorSubject<boolean>(
-		this.hasToken(),
-	);
-
 	login(request: RequestLoginDto) {
-		return this.postLogin(request).pipe(
-			tap((response: TokenDto) => {
-				this.storeToken(response.token);
-				this.isAuthenticatedSubject.next(true);
-			}),
-		);
+		return this.httpClient
+			.post<TokenDto>(
+				environment.userServiceApiUrl + ApiEndpoints.auth.postLogin,
+				request,
+			)
+			.pipe(
+				tap((response: TokenDto) => {
+					localStorage.setItem(this.JWT_TOKEN, response.token);
+					this.isAuthenticatedSubject.next(true);
+				}),
+			);
 	}
 
 	logout(): void {
@@ -56,33 +53,9 @@ export class AuthService {
 		return this.isAuthenticatedSubject.asObservable();
 	}
 
-	private storeToken(token: string): void {
-		localStorage.setItem(this.JWT_TOKEN, token);
-	}
-
-	private hasToken(): boolean {
-		return !!localStorage.getItem(this.JWT_TOKEN);
-	}
-
-	private decodeToken(): any {
-		const token = localStorage.getItem(this.JWT_TOKEN);
-		if (!token) return null;
-		try {
-			return jwtDecode(token);
-		} catch (error) {
-			return null;
-		}
-	}
-
 	isTokenExpired(): boolean {
-		const decoded = this.decodeToken();
-		if (!decoded?.exp) return true;
-		return decoded.exp * 1000 < Date.now();
-	}
-
-	getUsername(): string | null {
-		const decoded = this.decodeToken();
-		return decoded?.sub || null;
+		const decoded = this.getDecodedToken();
+		return !decoded?.exp || decoded.exp * 1000 < Date.now();
 	}
 
 	getCurrentUser(): Observable<ResponseUserDto | null> {
@@ -91,25 +64,32 @@ export class AuthService {
 			this.currentUserSubject.next(null);
 			return this.currentUserSubject.asObservable();
 		}
-
 		if (!this.currentUserSubject.value) {
-			this.loadCurrentUser();
+			this.loadCurrentUser(username);
 		}
-
 		return this.currentUserSubject.asObservable();
 	}
 
 	refreshCurrentUser(): void {
-		this.loadCurrentUser();
+		const username = this.getUsername();
+		if (username) this.loadCurrentUser(username);
 	}
 
-	private loadCurrentUser(): void {
-		const username = this.getUsername();
-		if (!username) {
-			this.currentUserSubject.next(null);
-			return;
+	private getDecodedToken(): any {
+		const token = localStorage.getItem(this.JWT_TOKEN);
+		if (!token) return null;
+		try {
+			return jwtDecode(token);
+		} catch {
+			return null;
 		}
+	}
 
+	private getUsername(): string | null {
+		return this.getDecodedToken()?.sub || null;
+	}
+
+	private loadCurrentUser(username: string): void {
 		this.userService.getFindUserByEmail(username).subscribe({
 			next: user => this.currentUserSubject.next(user),
 			error: () => this.currentUserSubject.next(null),

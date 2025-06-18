@@ -32,6 +32,7 @@
 								pInputText
 								formControlName="username"
 								placeholder="Enter your username"
+								[readonly]="!canEditUsername"
 							/>
 							<small
 								*ngIf="
@@ -45,7 +46,10 @@
 							</small>
 						</div>
 
-						<div class="form-actions">
+						<div
+							class="form-actions"
+							*ngIf="canEditUsername"
+						>
 							<button
 								pButton
 								type="submit"
@@ -324,6 +328,57 @@
 									)?.value ||
 									passwordForm.invalid ||
 									savingStates.password
+								"
+								class="save-button"
+							></button>
+						</div>
+					</form>
+				</div>
+
+				<!-- Permissions Section -->
+				<div class="section">
+					<h3 class="section-title">
+						<i class="pi pi-shield"></i>
+						permissions
+					</h3>
+
+					<form
+						[formGroup]="permissionsForm"
+						(ngSubmit)="savePermissions()"
+					>
+						<div class="form-field">
+							<label>User Permissions</label>
+							<div class="permissions-grid">
+								<div
+									class="permission-item"
+									*ngFor="let permission of permissionsList"
+								>
+									<p-checkbox
+										formControlName="permissions"
+										[value]="permission"
+										[disabled]="!canEditPermissions"
+									></p-checkbox>
+									<label>{{
+										formatPermissionLabel(permission)
+									}}</label>
+								</div>
+							</div>
+						</div>
+
+						<div
+							class="form-actions"
+							*ngIf="canEditPermissions"
+						>
+							<button
+								pButton
+								type="submit"
+								label="Update Permissions"
+								icon="pi pi-save"
+								[loading]="savingStates.permissions"
+								[disabled]="
+									permissionsForm.invalid ||
+									savingStates.permissions ||
+									isPermissionsUnchanged
 								"
 								class="save-button"
 							></button>

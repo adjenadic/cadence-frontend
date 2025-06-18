@@ -138,10 +138,10 @@ body {
 	color: rgba(255, 255, 255, 0.9);
 	font-size: 0.875rem;
 	margin-bottom: 1rem;
-	margin-right: 0.5rem;
 }
 
 .info-box i {
+	margin-right: 0.5rem;
 	color: #3b82f6;
 }
 

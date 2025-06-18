@@ -121,7 +121,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 	}
 
 	navigateToEditProfile() {
-		if (this.isOwnProfile && this.user) {
+		if (this.canEditProfile() && this.user) {
 			this.router.navigate(['/profile', this.user.username, 'config']);
 		}
 	}
@@ -245,5 +245,23 @@ export class ProfileComponent implements OnInit, OnDestroy {
 					});
 				},
 			});
+	}
+
+	canEditProfile(): boolean {
+		if (this.isOwnProfile) return true;
+
+		if (!this.currentUser?.permissions) return false;
+
+		return (
+			this.currentUser.permissions.includes('MANAGE_PERMISSIONS') ||
+			this.currentUser.permissions.includes('MANAGE_USERNAMES')
+		);
+	}
+
+	formatPermissionLabel(permission: string): string {
+		return permission
+			.replace(/_/g, ' ')
+			.toLowerCase()
+			.replace(/\b\w/g, l => l.toUpperCase());
 	}
 }

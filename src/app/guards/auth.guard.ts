@@ -18,11 +18,17 @@ export const authGuard: CanActivateFn = route => {
 			filter(currentUser => currentUser !== null),
 			take(1),
 			map(currentUser => {
-				if (currentUser!.username !== usernameFromRoute) {
-					router.navigate(['/profile', usernameFromRoute]);
-					return false;
+				const isOwnProfile =
+					currentUser!.username === usernameFromRoute;
+				const hasManagePermissions =
+					currentUser!.permissions?.includes('MANAGE_PERMISSIONS');
+
+				if (isOwnProfile || hasManagePermissions) {
+					return true;
 				}
-				return true;
+
+				router.navigate(['/']);
+				return false;
 			}),
 		);
 	}
