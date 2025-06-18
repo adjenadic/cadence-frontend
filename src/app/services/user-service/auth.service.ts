@@ -74,6 +74,12 @@ export class AuthService {
 		}
 	}
 
+	isTokenExpired(): boolean {
+		const decoded = this.decodeToken();
+		if (!decoded?.exp) return true;
+		return decoded.exp * 1000 < Date.now();
+	}
+
 	getUsername(): string | null {
 		const decoded = this.decodeToken();
 		return decoded?.sub || null;

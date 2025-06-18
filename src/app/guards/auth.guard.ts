@@ -1,14 +1,31 @@
 import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
 import { AuthService } from '../services/user-service/auth.service';
+import { filter, map, take } from 'rxjs';
 
-export const authGuard: CanActivateFn = () => {
+export const authGuard: CanActivateFn = route => {
 	const router = inject(Router);
 	const authService = inject(AuthService);
 
-	// if (authService.isTokenExpired()) {
-	// 	router.navigate(['/login']);
-	// 	return false;
-	// }
+	if (authService.isTokenExpired()) {
+		router.navigate(['/login']);
+		return false;
+	}
+
+	const usernameFromRoute = route.paramMap.get('username');
+	if (usernameFromRoute) {
+		return authService.getCurrentUser().pipe(
+			filter(currentUser => currentUser !== null),
+			take(1),
+			map(currentUser => {
+				if (currentUser!.username !== usernameFromRoute) {
+					router.navigate(['/profile', usernameFromRoute]);
+					return false;
+				}
+				return true;
+			}),
+		);
+	}
+
 	return true;
 };

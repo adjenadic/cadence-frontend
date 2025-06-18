@@ -4,17 +4,17 @@ import Aura from '@primeng/themes/aura';
 export const CadencePreset = definePreset(Aura, {
 	semantic: {
 		primary: {
-			50: '#eff6ff',
-			100: '#dbeafe',
-			200: '#bfdbfe',
-			300: '#93c5fd',
-			400: '#60a5fa',
-			500: '#3b82f6',
-			600: '#2563eb',
-			700: '#1d4ed8',
-			800: '#1e40af',
-			900: '#1e3a8a',
-			950: '#172554',
+			50: '#ffffff',
+			100: '#f8f8f8',
+			200: '#f0f0f0',
+			300: '#ededed',
+			400: '#e6e6e6',
+			500: '#cccccc',
+			600: '#999999',
+			700: '#666666',
+			800: '#333333',
+			900: '#1a1a1a',
+			950: '#0d0d0d',
 		},
 	},
 	components: {

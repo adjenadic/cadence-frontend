@@ -36,28 +36,60 @@
 	letter-spacing: -0.5px;
 }
 
-.config-layout {
-	display: grid;
-	grid-template-columns: 1fr;
+.config-sections {
+	display: flex;
+	flex-direction: column;
+	gap: 3rem;
+}
+
+.section-group {
+	display: flex;
+	flex-direction: column;
 	gap: 2rem;
 }
 
-.section-title {
-	margin: 0 0 1.5rem 0;
+.group-title {
+	margin: 0;
 	color: #fff;
-	font-size: 1.4rem;
-	font-weight: 500;
-	display: flex;
-	align-items: center;
-	gap: 0.5rem;
+	font-size: 1.8rem;
+	font-weight: 400;
+	letter-spacing: -0.5px;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+	padding-bottom: 0.5rem;
 }
 
-.section-title i {
-	opacity: 0.8;
+.config-layout {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 2rem;
+	justify-content: flex-start;
+}
+
+.section {
+	flex: 0 0 400px;
+	max-width: 400px;
+	min-height: 350px;
+	display: flex;
+	flex-direction: column;
 }
 
 .save-button {
 	width: 100%;
+}
+
+textarea {
+	resize: vertical;
+}
+
+.character-info {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.character-counter {
+	color: rgba(255, 255, 255, 0.6);
+	font-size: 0.75rem;
 }
 
 @media (min-width: 768px) {
@@ -70,12 +102,21 @@
 	.config-container {
 		padding: 1rem;
 	}
+
 	.page-title {
 		font-size: 2rem;
 	}
+
+	.config-layout {
+		flex-direction: column;
+	}
+
 	.section {
+		flex: 1 1 auto;
+		max-width: none;
 		padding: 1.5rem;
 	}
+
 	.form-actions {
 		justify-content: stretch;
 	}
@@ -85,21 +126,12 @@
 	.config-container {
 		padding: 0.5rem 1rem;
 	}
+
 	.page-title {
 		font-size: 1.8rem;
 	}
+
 	.section {
 		padding: 1rem;
 	}
-}
-
-.character-info {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-}
-
-.character-counter {
-	color: rgba(255, 255, 255, 0.6);
-	font-size: 0.75rem;
 }
