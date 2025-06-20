@@ -53,6 +53,7 @@ import { PERMISSIONS_LIST } from '../../../utils/constants/permissions';
 	styleUrls: ['./config.component.css'],
 })
 export class ConfigComponent implements OnInit, OnDestroy {
+	user: ResponseUserDto | null = null;
 	currentUser: ResponseUserDto | null = null;
 	permissionsList = PERMISSIONS_LIST;
 
@@ -125,24 +126,35 @@ export class ConfigComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnInit() {
-		this.loadCurrentUser();
+		this.authService
+			.getCurrentUser()
+			.pipe(takeUntil(this.destroy$))
+			.subscribe(currentUser => {
+				this.currentUser = currentUser;
+
+				this.route.params
+					.pipe(takeUntil(this.destroy$))
+					.subscribe(params => {
+						const username = params['username'];
+						if (username) {
+							if (
+								currentUser &&
+								currentUser.username === username
+							) {
+								this.user = currentUser;
+								this.populateForms(currentUser);
+								this.updateFormStates();
+							} else {
+								this.loadUserProfile(username);
+							}
+						}
+					});
+			});
 	}
 
 	ngOnDestroy() {
 		this.destroy$.next();
 		this.destroy$.complete();
-	}
-
-	private loadCurrentUser() {
-		this.authService
-			.getCurrentUser()
-			.pipe(takeUntil(this.destroy$))
-			.subscribe(user => {
-				this.currentUser = user;
-				if (user) {
-					this.populateForms(user);
-				}
-			});
 	}
 
 	private populateForms(user: ResponseUserDto) {
@@ -175,9 +187,43 @@ export class ConfigComponent implements OnInit, OnDestroy {
 		});
 	}
 
+	private updateFormStates() {
+		if (!this.canEditPassword) {
+			this.passwordForm.disable();
+		}
+
+		if (!this.canEditEmail) {
+			this.emailForm.get('updatedEmail')?.disable();
+		}
+
+		if (!this.canEditAboutMe) {
+			this.aboutMeForm.disable();
+		}
+
+		if (!this.canEditPronouns) {
+			this.pronounsForm.disable();
+		}
+	}
+
+	private loadUserProfile(username: string) {
+		this.userService
+			.getFindUserByUsername(username)
+			.pipe(takeUntil(this.destroy$))
+			.subscribe({
+				next: user => {
+					this.user = user;
+					this.populateForms(user);
+					this.updateFormStates();
+				},
+				error: () => {
+					this.user = null;
+				},
+			});
+	}
+
 	navigateBack() {
-		if (this.currentUser) {
-			this.router.navigate(['/profile', this.currentUser.username]);
+		if (this.user) {
+			this.router.navigate(['/profile', this.user.username]);
 		}
 	}
 
@@ -195,6 +241,17 @@ export class ConfigComponent implements OnInit, OnDestroy {
 						this.usernameForm.markAsUntouched();
 						this.usernameForm.markAsPristine();
 						this.authService.refreshCurrentUser();
+
+						const newUsername =
+							this.usernameForm.get('username')?.value;
+						if (newUsername) {
+							this.router.navigate([
+								'/profile',
+								newUsername,
+								'config',
+							]);
+						}
+
 						this.messageService.add({
 							severity: 'success',
 							summary: 'Username updated successfully',
@@ -380,6 +437,7 @@ export class ConfigComponent implements OnInit, OnDestroy {
 						this.messageService.add({
 							severity: 'success',
 							summary: 'Permissions updated successfully',
+							detail: 'User will need to log in again to see changes.',
 						});
 					},
 					error: error => {
@@ -398,25 +456,58 @@ export class ConfigComponent implements OnInit, OnDestroy {
 		}
 	}
 
+	deleteUser() {
+		if (!this.user?.email) return;
+
+		this.userService
+			.deleteUserByEmail(this.user.email)
+			.pipe(takeUntil(this.destroy$))
+			.subscribe({
+				next: () => {
+					this.messageService.add({
+						severity: 'success',
+						summary: 'Account deleted successfully',
+					});
+
+					if (this.currentUser?.username === this.user?.username) {
+						this.authService.logout();
+					}
+
+					setTimeout(() => {
+						this.router.navigate(['/']);
+					}, 1000);
+				},
+				error: error => {
+					const errorMessage =
+						this.errorHandlingService.extractErrorMessage(error);
+					this.messageService.add({
+						severity: 'error',
+						summary: 'Account deletion failed',
+						detail: errorMessage,
+					});
+				},
+			});
+	}
+
 	get isUsernameUnchanged(): boolean {
 		const currentUsername = this.usernameForm.get('username')?.value;
-		return currentUsername === this.currentUser?.username;
+		return currentUsername === this.user?.username;
 	}
 
 	get isPronounsUnchanged(): boolean {
 		const currentPronouns = this.pronounsForm.get('pronouns')?.value;
-		return currentPronouns === (this.currentUser?.pronouns || '');
+		return currentPronouns === (this.user?.pronouns || '');
 	}
 
 	get isAboutMeUnchanged(): boolean {
 		const currentAboutMe = this.aboutMeForm.get('aboutMe')?.value;
-		return currentAboutMe === (this.currentUser?.aboutMe || '');
+		return currentAboutMe === (this.user?.aboutMe || '');
 	}
 
 	get isPermissionsUnchanged(): boolean {
 		const currentPermissions =
 			this.permissionsForm.get('permissions')?.value;
-		const originalPermissions = this.currentUser?.permissions || [];
+		const originalPermissions = this.user?.permissions || [];
 		return (
 			JSON.stringify(currentPermissions?.sort()) ===
 			JSON.stringify(originalPermissions?.sort())
@@ -434,8 +525,37 @@ export class ConfigComponent implements OnInit, OnDestroy {
 		);
 	}
 
+	get canEditPronouns(): boolean {
+		return (
+			this.currentUser?.username === this.user?.username ||
+			!!this.currentUser?.permissions?.includes('MANAGE_USER_DETAILS')
+		);
+	}
+
+	get canEditAboutMe(): boolean {
+		return (
+			this.currentUser?.username === this.user?.username ||
+			!!this.currentUser?.permissions?.includes('MANAGE_USER_DETAILS')
+		);
+	}
+
+	get canEditEmail(): boolean {
+		return this.currentUser?.username === this.user?.username;
+	}
+
+	get canEditPassword(): boolean {
+		return this.currentUser?.username === this.user?.username;
+	}
+
 	get canEditPermissions(): boolean {
 		return !!this.currentUser?.permissions?.includes('MANAGE_PERMISSIONS');
+	}
+
+	get canDeleteUser(): boolean {
+		return (
+			this.currentUser?.username === this.user?.username ||
+			!!this.currentUser?.permissions?.includes('DELETE_USERS')
+		);
 	}
 
 	formatPermissionLabel(permission: string): string {

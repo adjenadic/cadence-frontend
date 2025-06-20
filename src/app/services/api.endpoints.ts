@@ -25,7 +25,7 @@ export const ApiEndpoints = {
 		putUpdatePermissions: 'users/permissions',
 		// DELETE
 		deleteById: 'users',
-		deleteByEmail: 'users',
+		deleteByEmail: 'users/email',
 	},
 
 	// CommentService

@@ -106,7 +106,8 @@
 								[disabled]="
 									pronounsForm.invalid ||
 									savingStates.pronouns ||
-									isPronounsUnchanged
+									isPronounsUnchanged ||
+									!canEditPronouns
 								"
 								class="save-button"
 							></button>
@@ -160,7 +161,8 @@
 								[disabled]="
 									aboutMeForm.invalid ||
 									savingStates.aboutMe ||
-									isAboutMeUnchanged
+									isAboutMeUnchanged ||
+									!canEditAboutMe
 								"
 								class="save-button"
 							></button>
@@ -230,7 +232,9 @@
 								icon="pi pi-save"
 								[loading]="savingStates.email"
 								[disabled]="
-									emailForm.invalid || savingStates.email
+									emailForm.invalid ||
+									savingStates.email ||
+									!canEditEmail
 								"
 								class="save-button"
 							></button>
@@ -256,6 +260,7 @@
 								[feedback]="false"
 								[toggleMask]="true"
 								placeholder="Enter current password"
+								[disabled]="!canEditPassword"
 								styleClass="w-full"
 							></p-password>
 						</div>
@@ -266,6 +271,7 @@
 								formControlName="updatedPassword"
 								[toggleMask]="true"
 								placeholder="Enter new password"
+								[disabled]="!canEditPassword"
 								styleClass="w-full"
 							></p-password>
 							<small
@@ -286,7 +292,8 @@
 								formControlName="updatedPasswordConfirmation"
 								[feedback]="false"
 								[toggleMask]="true"
-								placeholder="Confirm new password"
+								placeholder="Enter new password again"
+								[disabled]="!canEditPassword"
 								styleClass="w-full"
 							></p-password>
 							<small
@@ -384,6 +391,43 @@
 							></button>
 						</div>
 					</form>
+				</div>
+			</div>
+		</div>
+
+		<!-- Deletion Section -->
+		<div
+			class="section-group"
+			*ngIf="canDeleteUser"
+		>
+			<h2 class="group-title">deletion</h2>
+			<div class="config-layout">
+				<!-- Profile Deletion Section -->
+				<div class="section">
+					<h3 class="section-title">
+						<i class="pi pi-times"></i>
+						profile deletion
+					</h3>
+
+					<div class="form-field">
+						<div class="info-box">
+							<i class="pi pi-exclamation-triangle"></i>
+							<span class="p-info">
+								This action is permanent and cannot be undone.
+								All user data will be permanently deleted.
+							</span>
+						</div>
+
+						<div class="form-actions">
+							<button
+								pButton
+								label="Delete Account"
+								icon="pi pi-times"
+								class="p-button-danger"
+								(click)="deleteUser()"
+							></button>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
