@@ -1,0 +1,120 @@
+<div class="album-detail-container">
+	<div
+		*ngIf="loading"
+		class="loading-message"
+	>
+		Loading album details...
+	</div>
+
+	<div
+		*ngIf="!loading && album"
+		class="album-detail"
+	>
+		<div class="album-header">
+			<div class="album-artwork">
+				<img
+					[src]="album.strAlbumThumb || '/assets/default-album.png'"
+					[alt]="album.strAlbum"
+					class="album-image"
+				/>
+			</div>
+
+			<div class="album-info">
+				<h1>{{ album.strAlbum }}</h1>
+				<h2
+					(click)="onArtistClick()"
+					class="artist-name"
+				>
+					{{ album.strArtist }}
+				</h2>
+
+				<div class="album-details">
+					<div
+						class="detail-row"
+						*ngIf="album.intYearReleased"
+					>
+						<strong>Release Year:</strong>
+						{{ album.intYearReleased }}
+					</div>
+					<div
+						class="detail-row"
+						*ngIf="album.strGenre"
+					>
+						<strong>Genre:</strong> {{ album.strGenre }}
+					</div>
+					<div
+						class="detail-row"
+						*ngIf="album.intScore"
+					>
+						<strong>Score:</strong> {{ album.intScore }}/100
+					</div>
+					<div
+						class="detail-row"
+						*ngIf="album.strLabel"
+					>
+						<strong>Label:</strong> {{ album.strLabel }}
+					</div>
+					<div
+						class="detail-row"
+						*ngIf="album.strStyle"
+					>
+						<strong>Style:</strong> {{ album.strStyle }}
+					</div>
+				</div>
+
+				<div
+					class="album-description"
+					*ngIf="album.strDescriptionEN"
+				>
+					<h3>About This Album</h3>
+					<p>{{ album.strDescriptionEN }}</p>
+				</div>
+
+				<div class="album-actions">
+					<p-button
+						label="Back to Home"
+						icon="pi pi-arrow-left"
+						(click)="onBackClick()"
+						styleClass="p-button-outlined"
+					>
+					</p-button>
+				</div>
+			</div>
+		</div>
+
+		<!-- Related Albums Section -->
+		<div
+			class="related-albums-section"
+			*ngIf="relatedAlbums.length > 0"
+		>
+			<h2>More by {{ album.strArtist }}</h2>
+			<div class="related-albums-grid">
+				<p-card
+					*ngFor="let relatedAlbum of relatedAlbums"
+					[style]="{ cursor: 'pointer' }"
+					(click)="onRelatedAlbumClick(relatedAlbum)"
+					class="related-album-card"
+				>
+					<div class="related-album-content">
+						<img
+							[src]="relatedAlbum.strAlbumThumb"
+							[alt]="relatedAlbum.strAlbum"
+							class="related-album-image"
+						/>
+						<div class="related-album-info">
+							<h4>{{ relatedAlbum.strAlbum }}</h4>
+							<small>{{ relatedAlbum.intYearReleased }}</small>
+						</div>
+					</div>
+				</p-card>
+			</div>
+		</div>
+	</div>
+
+	<div
+		*ngIf="!loading && !album"
+		class="error-message"
+	>
+		Album not found.
+	</div>
+</div>

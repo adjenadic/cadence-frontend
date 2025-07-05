@@ -42,4 +42,16 @@ export const ApiEndpoints = {
 		// DELETE
 		deleteById: 'comments/delete',
 	},
+
+	// MusicService
+	music: {
+		// GET
+		getAlbumById: 'music/albums',
+		getRandomAlbums: 'music/albums/random',
+		getNewestAlbums: 'music/albums/newest',
+		getTopSellingAlbums: 'music/albums/top-selling',
+		getAlbumsByArtist: 'music/albums/artist',
+		getArtistById: 'music/artists',
+		getRandomArtists: 'music/artists/random',
+	},
 };

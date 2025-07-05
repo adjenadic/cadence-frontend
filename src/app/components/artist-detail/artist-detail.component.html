@@ -1,0 +1,120 @@
+<div class="artist-detail-container">
+	<div
+		*ngIf="loading"
+		class="loading-message"
+	>
+		Loading artist details...
+	</div>
+
+	<div
+		*ngIf="!loading && artist"
+		class="artist-detail"
+	>
+		<div class="artist-header">
+			<div class="artist-artwork">
+				<img
+					[src]="
+						artist.strArtistThumb || '/assets/default-artist.png'
+					"
+					[alt]="artist.strArtist"
+					class="artist-image"
+				/>
+			</div>
+
+			<div class="artist-info">
+				<h1>{{ artist.strArtist }}</h1>
+
+				<div class="artist-details">
+					<div
+						class="detail-row"
+						*ngIf="artist.intFormedYear"
+					>
+						<strong>Formed:</strong> {{ artist.intFormedYear }}
+					</div>
+					<div
+						class="detail-row"
+						*ngIf="artist.strGenre"
+					>
+						<strong>Genre:</strong> {{ artist.strGenre }}
+					</div>
+					<div
+						class="detail-row"
+						*ngIf="artist.strStyle"
+					>
+						<strong>Style:</strong> {{ artist.strStyle }}
+					</div>
+					<div
+						class="detail-row"
+						*ngIf="artist.strCountry"
+					>
+						<strong>Country:</strong> {{ artist.strCountry }}
+					</div>
+					<div
+						class="detail-row"
+						*ngIf="artist.strWebsite"
+					>
+						<strong>Website:</strong>
+						<a
+							[href]="getFullUrl(artist.strWebsite)"
+							target="_blank"
+							>{{ artist.strWebsite }}</a
+						>
+					</div>
+				</div>
+
+				<div
+					class="artist-description"
+					*ngIf="artist.strBiographyEN"
+				>
+					<h3>About {{ artist.strArtist }}</h3>
+					<p>{{ artist.strBiographyEN }}</p>
+				</div>
+
+				<div class="artist-actions">
+					<p-button
+						label="Back to Home"
+						icon="pi pi-arrow-left"
+						(click)="onBackClick()"
+						styleClass="p-button-outlined"
+					>
+					</p-button>
+				</div>
+			</div>
+		</div>
+
+		<!-- Albums Section -->
+		<div
+			class="albums-section"
+			*ngIf="albums.length > 0"
+		>
+			<h2>Albums by {{ artist.strArtist }}</h2>
+			<div class="albums-grid">
+				<p-card
+					*ngFor="let album of albums"
+					[style]="{ cursor: 'pointer' }"
+					(click)="onAlbumClick(album)"
+					class="album-card"
+				>
+					<div class="album-content">
+						<img
+							[src]="album.strAlbumThumb"
+							[alt]="album.strAlbum"
+							class="album-image"
+						/>
+						<div class="album-info">
+							<h4>{{ album.strAlbum }}</h4>
+							<small>{{ album.intYearReleased }}</small>
+						</div>
+					</div>
+				</p-card>
+			</div>
+		</div>
+	</div>
+
+	<div
+		*ngIf="!loading && !artist"
+		class="error-message"
+	>
+		Artist not found.
+	</div>
+</div>
