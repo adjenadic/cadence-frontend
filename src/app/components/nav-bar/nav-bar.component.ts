@@ -1,25 +1,37 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { MenuItem } from 'primeng/api';
-import { Menubar } from 'primeng/menubar';
 import { BadgeModule } from 'primeng/badge';
 import { AvatarModule } from 'primeng/avatar';
 import { MenuModule } from 'primeng/menu';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
+import { AutoCompleteModule } from 'primeng/autocomplete';
+import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../services/user-service/auth.service';
 import { ResponseUserDto } from '../../dtos/response-user-dto';
+import { MusicService } from '../../services/music-service/music.service';
+
+interface SearchResultItem {
+	id: string;
+	displayName: string;
+	type: 'Artist' | 'Album';
+	subtitle?: string;
+	image?: string;
+	routerLink: string[];
+}
 
 @Component({
 	selector: 'app-nav-bar',
 	imports: [
-		Menubar,
 		BadgeModule,
 		AvatarModule,
 		MenuModule,
 		ButtonModule,
 		InputTextModule,
+		AutoCompleteModule,
+		FormsModule,
 		CommonModule,
 		RouterModule,
 	],
@@ -28,14 +40,20 @@ import { ResponseUserDto } from '../../dtos/response-user-dto';
 	styleUrl: './nav-bar.component.css',
 })
 export class NavBarComponent implements OnInit {
-	items: MenuItem[] | undefined;
 	isScrolled = false;
 	isAuthenticated = false;
 	userMenuItems: MenuItem[] | undefined;
 	currentUser: ResponseUserDto | null = null;
 	userProfileImage: string = 'assets/default-avatar.png';
 
-	constructor(private authService: AuthService) {}
+	selectedItem: SearchResultItem | null = null;
+	searchResults: SearchResultItem[] = [];
+
+	constructor(
+		private authService: AuthService,
+		private musicService: MusicService,
+		private router: Router,
+	) {}
 
 	@HostListener('window:scroll', [])
 	onWindowScroll() {
@@ -51,38 +69,50 @@ export class NavBarComponent implements OnInit {
 				this.updateUserMenu();
 			}
 		});
+	}
 
-		this.items = [
-			{
-				label: 'Home',
-				icon: 'pi pi-home',
-				routerLink: ['/home'],
-			},
-			{
-				label: 'Projects',
-				icon: 'pi pi-search',
-				items: [
-					{
-						label: 'Core',
-						icon: 'pi pi-bolt',
-						routerLink: ['/projects/core'],
-					},
-					{
-						label: 'Blocks',
-						icon: 'pi pi-server',
-						routerLink: ['/projects/blocks'],
-					},
-					{
-						separator: true,
-					},
-					{
-						label: 'UI Kit',
-						icon: 'pi pi-pencil',
-						routerLink: ['/projects/ui-kit'],
-					},
-				],
-			},
-		];
+	search(event: any) {
+		const query = event.query;
+		if (query.length < 2) {
+			this.searchResults = [];
+			return;
+		}
+
+		this.musicService.searchAll(query).subscribe(results => {
+			this.searchResults = [
+				...results.artists.map(artist => ({
+					id: artist.id,
+					displayName: artist.strArtist,
+					type: 'Artist' as const,
+					subtitle: artist.strGenre,
+					image: artist.strArtistThumb,
+					routerLink: ['/artist', artist.id],
+				})),
+				...results.albums.map(album => ({
+					id: album.id,
+					displayName: album.strAlbum,
+					type: 'Album' as const,
+					subtitle: album.strArtist,
+					image: album.strAlbumThumb,
+					routerLink: ['/album', album.id],
+				})),
+			].slice(0, 8);
+		});
+	}
+
+	onItemSelect(event: any) {
+		const item: SearchResultItem = event.value;
+		this.router.navigate(item.routerLink);
+		this.selectedItem = null;
+	}
+
+	getItemImage(item: SearchResultItem): string {
+		return (
+			item.image ||
+			(item.type === 'Artist'
+				? 'assets/default-artist.png'
+				: 'assets/default-album.png')
+		);
 	}
 
 	updateUserMenu() {

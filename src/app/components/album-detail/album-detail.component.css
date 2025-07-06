@@ -49,10 +49,6 @@
 	color: #007bff;
 }
 
-.album-details {
-	margin-bottom: 2rem;
-}
-
 .detail-row {
 	margin-bottom: 0.75rem;
 	font-size: 1.1rem;
@@ -68,21 +64,44 @@
 }
 
 .album-description {
-	background: #f8f9fa;
+	background: rgba(255, 255, 255, 0.1);
+	border: 1px solid rgba(255, 255, 255, 0.2);
 	padding: 1.5rem;
 	border-radius: 8px;
-	margin-top: 2rem;
+	margin: 1.5rem 0;
+	max-height: 20rem;
+	overflow-y: auto;
+	padding-right: 8px;
 }
 
 .album-description h3 {
 	margin-top: 0;
-	color: #333;
+	color: #fff;
+	margin-bottom: 1rem;
 }
 
 .album-description p {
 	line-height: 1.6;
-	color: #666;
+	color: #ccc;
 	margin-bottom: 0;
+}
+
+.album-description::-webkit-scrollbar {
+	width: 6px;
+}
+
+.album-description::-webkit-scrollbar-track {
+	background: rgba(255, 255, 255, 0.1);
+	border-radius: 3px;
+}
+
+.album-description::-webkit-scrollbar-thumb {
+	background: rgba(255, 255, 255, 0.3);
+	border-radius: 3px;
+}
+
+.album-description::-webkit-scrollbar-thumb:hover {
+	background: rgba(255, 255, 255, 0.5);
 }
 
 .loading-message,

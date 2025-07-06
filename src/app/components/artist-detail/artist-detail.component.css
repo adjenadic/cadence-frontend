@@ -61,6 +61,9 @@
 	padding: 1.5rem;
 	border-radius: 8px;
 	margin: 1.5rem 0;
+	max-height: 20rem;
+	overflow-y: auto;
+	padding-right: 8px;
 }
 
 .artist-description h3 {
@@ -73,6 +76,24 @@
 	line-height: 1.6;
 	color: #ccc;
 	margin-bottom: 0;
+}
+
+.artist-description::-webkit-scrollbar {
+	width: 6px;
+}
+
+.artist-description::-webkit-scrollbar-track {
+	background: rgba(255, 255, 255, 0.1);
+	border-radius: 3px;
+}
+
+.artist-description::-webkit-scrollbar-thumb {
+	background: rgba(255, 255, 255, 0.3);
+	border-radius: 3px;
+}
+
+.artist-description::-webkit-scrollbar-thumb:hover {
+	background: rgba(255, 255, 255, 0.5);
 }
 
 .artist-actions {

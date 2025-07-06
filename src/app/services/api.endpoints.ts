@@ -46,6 +46,7 @@ export const ApiEndpoints = {
 	// MusicService
 	music: {
 		// GET
+		search: 'music/search',
 		getAlbumById: 'music/albums',
 		getRandomAlbums: 'music/albums/random',
 		getNewestAlbums: 'music/albums/newest',

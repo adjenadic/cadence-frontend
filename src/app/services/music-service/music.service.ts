@@ -11,6 +11,18 @@ import { ArtistSummaryDto } from '../../dtos/artist-summary-dto';
 export class MusicService {
 	constructor(private httpClient: HttpClient) {}
 
+	searchAll(query: string) {
+		return this.httpClient.get<{
+			artists: ArtistSummaryDto[];
+			albums: AlbumSummaryDto[];
+		}>(
+			environment.musicServiceApiUrl +
+				ApiEndpoints.music.search +
+				'?q=' +
+				encodeURIComponent(query),
+		);
+	}
+
 	getAlbumById(id: string) {
 		return this.httpClient.get<AlbumSummaryDto>(
 			environment.musicServiceApiUrl +

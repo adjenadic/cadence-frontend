@@ -5,9 +5,43 @@
 	<div class="navbar-content">
 		<!-- Left Section -->
 		<div class="left-section">
-			<p-menubar [model]="items">
-				<ng-template #start> </ng-template>
-			</p-menubar>
+			<p-autoComplete
+				[(ngModel)]="selectedItem"
+				[suggestions]="searchResults"
+				(completeMethod)="search($event)"
+				(onSelect)="onItemSelect($event)"
+				[dropdown]="false"
+				placeholder="Search artists or albums..."
+				field="displayName"
+				[showClear]="true"
+				[delay]="300"
+				styleClass="search-autocomplete"
+			>
+				<ng-template
+					#item
+					let-item
+				>
+					<div class="search-result-item">
+						<img
+							[src]="getItemImage(item)"
+							[alt]="item.displayName"
+							class="search-item-image"
+						/>
+						<div class="search-item-details">
+							<div class="search-item-name">
+								{{ item.displayName }}
+							</div>
+							<div class="search-item-type">{{ item.type }}</div>
+							<div
+								class="search-item-subtitle"
+								*ngIf="item.subtitle"
+							>
+								{{ item.subtitle }}
+							</div>
+						</div>
+					</div>
+				</ng-template>
+			</p-autoComplete>
 		</div>
 
 		<!-- Center Logo -->
