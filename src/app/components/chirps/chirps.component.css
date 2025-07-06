@@ -1,0 +1,153 @@
+.chirp-box {
+	margin-top: 2rem;
+}
+
+.section-title {
+	margin: 0 0 1.5rem 0;
+	color: #fff;
+	font-size: 1.4rem;
+	font-weight: 600;
+	padding-bottom: 0.5rem;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.create-chirp {
+	margin-bottom: 1.5rem;
+}
+
+.chirp-form {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+.chirp-input {
+	width: 100%;
+	resize: vertical;
+}
+
+.chirp-actions {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.char-count {
+	color: rgba(255, 255, 255, 0.6);
+	font-size: 0.8rem;
+}
+
+.login-prompt {
+	margin-bottom: 1.5rem;
+	text-align: center;
+}
+
+.login-prompt a {
+	color: #007bff;
+	text-decoration: none;
+}
+
+.login-prompt a:hover {
+	text-decoration: underline;
+}
+
+.chirps-list {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+.loading-message,
+.no-chirps {
+	text-align: center;
+	padding: 2rem;
+	color: rgba(255, 255, 255, 0.7);
+}
+
+.chirp-card {
+	width: 100%;
+}
+
+.chirp-content {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+}
+
+.chirp-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.chirp-author {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.chirp-avatar {
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	object-fit: cover;
+	border: 2px solid rgba(255, 255, 255, 0.2);
+	transition: border-color 0.3s ease;
+}
+
+.chirp-avatar.clickable {
+	cursor: pointer;
+}
+
+.chirp-avatar.clickable:hover {
+	border-color: rgba(255, 255, 255, 0.5);
+}
+
+.author-name {
+	font-weight: 600;
+	color: #fff;
+	transition: color 0.3s ease;
+}
+
+.author-name.clickable {
+	cursor: pointer;
+}
+
+.author-name.clickable:hover {
+	color: #007bff;
+	text-decoration: underline;
+}
+
+.chirp-meta {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.chirp-time {
+	color: rgba(255, 255, 255, 0.6);
+	font-size: 0.8rem;
+}
+
+.delete-btn {
+	color: #dc3545 !important;
+}
+
+.chirp-text p {
+	margin: 0;
+	line-height: 1.5;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+}
+
+@media (max-width: 768px) {
+	.chirp-header {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.5rem;
+	}
+
+	.chirp-meta {
+		align-self: flex-end;
+	}
+}

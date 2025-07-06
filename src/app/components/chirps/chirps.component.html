@@ -1,0 +1,113 @@
+<div class="chirp-box">
+	<h3 class="section-title">Chirps</h3>
+
+	<!-- Create new chirp -->
+	<div
+		class="create-chirp"
+		*ngIf="isAuthenticated"
+	>
+		<p-card>
+			<div class="chirp-form">
+				<textarea
+					pTextarea
+					[(ngModel)]="newChirpContent"
+					placeholder="Write a chirp..."
+					rows="3"
+					maxlength="280"
+					class="chirp-input"
+				></textarea>
+				<div class="chirp-actions">
+					<small class="char-count"
+						>{{ newChirpContent.length }}/280</small
+					>
+					<button
+						pButton
+						label="Chirp"
+						icon="pi pi-send"
+						(click)="submitChirp()"
+						[disabled]="
+							!newChirpContent.trim() ||
+							newChirpContent.length > 280 ||
+							isSubmitting
+						"
+						[loading]="isSubmitting"
+						class="p-button-sm"
+					></button>
+				</div>
+			</div>
+		</p-card>
+	</div>
+
+	<!-- Login prompt for non-authenticated users -->
+	<div
+		class="login-prompt"
+		*ngIf="!isAuthenticated"
+	>
+		<p-card>
+			<p>
+				<a [routerLink]="['/login']">Log in</a> to post chirps on this
+				profile.
+			</p>
+		</p-card>
+	</div>
+
+	<!-- Chirps list -->
+	<div class="chirps-list">
+		<div
+			*ngIf="isLoading"
+			class="loading-message"
+		>
+			Loading chirps...
+		</div>
+
+		<div
+			*ngIf="!isLoading && chirps.length === 0"
+			class="no-chirps"
+		>
+			<p>No chirps yet. Be the first to leave one!</p>
+		</div>
+
+		<p-card
+			*ngFor="let chirp of chirps"
+			class="chirp-card"
+		>
+			<div class="chirp-content">
+				<div class="chirp-header">
+					<div class="chirp-author">
+						<img
+							[src]="getChirperProfilePictureUrl(chirp)"
+							[alt]="
+								getChirperDisplayName(chirp) +
+								' profile picture'
+							"
+							class="chirp-avatar"
+							[class.clickable]="shouldShowProfileLink(chirp)"
+							(click)="navigateToChirperProfile(chirp)"
+						/>
+						<span
+							class="author-name"
+							[class.clickable]="shouldShowProfileLink(chirp)"
+							(click)="navigateToChirperProfile(chirp)"
+							>{{ getChirperDisplayName(chirp) }}</span
+						>
+					</div>
+					<div class="chirp-meta">
+						<small class="chirp-time">{{
+							formatTimestamp(chirp.timestamp)
+						}}</small>
+						<button
+							*ngIf="canDeleteChirp(chirp)"
+							pButton
+							icon="pi pi-trash"
+							class="p-button-text p-button-sm delete-btn"
+							(click)="deleteChirp(chirp.id)"
+						></button>
+					</div>
+				</div>
+				<div class="chirp-text">
+					<p>{{ chirp.content }}</p>
+				</div>
+			</div>
+		</p-card>
+	</div>
+</div>

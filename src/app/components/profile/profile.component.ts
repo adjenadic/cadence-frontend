@@ -19,6 +19,7 @@ import { MessageService } from 'primeng/api';
 import { ErrorHandlingService } from '../../services/error-handling-service/error-handling.service';
 import { ResponseUserDto } from '../../dtos/response-user-dto';
 import { RequestUpdateProfilePictureDto } from '../../dtos/request-update-profile-picture-dto';
+import { ChirpsComponent } from '../chirps/chirps.component';
 
 @Component({
 	selector: 'app-profile',
@@ -34,6 +35,7 @@ import { RequestUpdateProfilePictureDto } from '../../dtos/request-update-profil
 		SkeletonModule,
 		ToastModule,
 		TooltipModule,
+		ChirpsComponent,
 	],
 	templateUrl: './profile.component.html',
 	styleUrl: './profile.component.css',

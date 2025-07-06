@@ -28,19 +28,19 @@ export const ApiEndpoints = {
 		deleteByEmail: 'users/email',
 	},
 
-	// CommentService
-	comments: {
+	// ChirpService
+	chirps: {
 		// GET
-		getByUserId: 'comments/user-id',
-		getById: 'comments',
+		getByUserId: 'chirps/user-id',
+		getById: 'chirps',
 		// POST
-		postCreate: 'comments/create',
+		postCreate: 'chirps/create',
 		// PUT
-		putUpdate: 'comments/update',
-		putLike: 'comments/like',
-		putUnlike: 'comments/unlike',
+		putUpdate: 'chirps/update',
+		putLike: 'chirps/like',
+		putUnlike: 'chirps/unlike',
 		// DELETE
-		deleteById: 'comments/delete',
+		deleteById: 'chirps/delete',
 	},
 
 	// MusicService
