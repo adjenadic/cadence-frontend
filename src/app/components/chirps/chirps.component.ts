@@ -205,7 +205,7 @@ export class ChirpsComponent implements OnInit, OnDestroy, OnChanges {
 	canDeleteChirp(chirp: ResponseChirpDto): boolean {
 		return !!(
 			this.currentUser?.id === chirp.chirperId ||
-			this.currentUser?.permissions?.includes('DELETE_COMMENTS')
+			this.currentUser?.permissions?.includes('DELETE_CHIRPS')
 		);
 	}
 
