@@ -82,6 +82,12 @@
 			</div>
 		</div>
 
+		<!-- Reviews Section -->
+		<app-catalog-reviews
+			[album]="album"
+			(reviewSubmitted)="onReviewSubmitted()"
+		></app-catalog-reviews>
+
 		<!-- Related Albums Section -->
 		<div
 			class="related-albums-section"

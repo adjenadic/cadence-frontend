@@ -15,18 +15,13 @@ export class ChirpService {
 	getFindChirpsByUserId(userId: number) {
 		return this.httpClient.get<ResponseChirpDto[]>(
 			environment.userServiceApiUrl +
-				ApiEndpoints.chirps.getByUserId +
-				'/' +
-				userId,
+				ApiEndpoints.chirps.getByUserId(userId),
 		);
 	}
 
 	getFindChirpsById(id: number) {
 		return this.httpClient.get<ResponseChirpDto>(
-			environment.userServiceApiUrl +
-				ApiEndpoints.chirps.getById +
-				'/' +
-				id,
+			environment.userServiceApiUrl + ApiEndpoints.chirps.getById(id),
 		);
 	}
 
@@ -46,30 +41,21 @@ export class ChirpService {
 
 	putLikeChirp(id: number) {
 		return this.httpClient.put<ResponseChirpDto>(
-			environment.userServiceApiUrl +
-				ApiEndpoints.chirps.putLike +
-				'/' +
-				id,
+			environment.userServiceApiUrl + ApiEndpoints.chirps.putLike(id),
 			{},
 		);
 	}
 
 	putUnlikeChirp(id: number) {
 		return this.httpClient.put<ResponseChirpDto>(
-			environment.userServiceApiUrl +
-				ApiEndpoints.chirps.putUnlike +
-				'/' +
-				id,
+			environment.userServiceApiUrl + ApiEndpoints.chirps.putUnlike(id),
 			{},
 		);
 	}
 
 	deleteChirpById(id: number) {
 		return this.httpClient.delete<boolean>(
-			environment.userServiceApiUrl +
-				ApiEndpoints.chirps.deleteById +
-				'/' +
-				id,
+			environment.userServiceApiUrl + ApiEndpoints.chirps.deleteById(id),
 		);
 	}
 }

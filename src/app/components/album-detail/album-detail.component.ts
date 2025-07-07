@@ -5,10 +5,11 @@ import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 import { MusicService } from '../../services/music-service/music.service';
 import { AlbumSummaryDto } from '../../dtos/album-summary-dto';
+import { CatalogReviewsComponent } from '../catalog-reviews/catalog-reviews.component';
 
 @Component({
 	selector: 'app-album-detail',
-	imports: [CommonModule, CardModule, ButtonModule],
+	imports: [CommonModule, CardModule, ButtonModule, CatalogReviewsComponent],
 	templateUrl: './album-detail.component.html',
 	styleUrl: './album-detail.component.css',
 })
@@ -76,5 +77,9 @@ export class AlbumDetailComponent implements OnInit {
 
 	onRelatedAlbumClick(album: AlbumSummaryDto) {
 		this.router.navigate(['/album', album.id]);
+	}
+
+	onReviewSubmitted() {
+		this.loadAlbum();
 	}
 }

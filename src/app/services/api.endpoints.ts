@@ -9,12 +9,15 @@ export const ApiEndpoints = {
 	users: {
 		// GET
 		getAll: 'users/all',
-		getById: 'users',
-		getByEmail: 'users/email',
-		getByUsername: 'users/username',
+		getById: (id: number) => `users/${id}`,
+		getByEmail: (email: string) => `users/email/${email}`,
+		getByUsername: (username: string) => `users/username/${username}`,
+
 		// POST
 		postCreate: 'users/create',
-		postVerifyEmail: 'users/verify-email?verificationToken=',
+		postVerifyEmail: (verificationToken: string) =>
+			`users/verify-email?verificationToken=${verificationToken}`,
+
 		// PUT
 		putUpdateEmail: 'users/email',
 		putUpdateUsername: 'users/username',
@@ -23,36 +26,55 @@ export const ApiEndpoints = {
 		putUpdateAboutMe: 'users/about-me',
 		putUpdateProfilePicture: 'users/profile-picture',
 		putUpdatePermissions: 'users/permissions',
+
 		// DELETE
-		deleteById: 'users',
-		deleteByEmail: 'users/email',
+		deleteById: (id: number) => `users/${id}`,
+		deleteByEmail: (email: string) => `users/email/${email}`,
 	},
 
 	// ChirpService
 	chirps: {
 		// GET
-		getByUserId: 'chirps/user-id',
-		getById: 'chirps',
+		getByUserId: (userId: number) => `chirps/user-id/${userId}`,
+		getById: (id: number) => `chirps/${id}`,
+
 		// POST
 		postCreate: 'chirps/create',
+
 		// PUT
 		putUpdate: 'chirps/update',
-		putLike: 'chirps/like',
-		putUnlike: 'chirps/unlike',
+		putLike: (id: number) => `chirps/like/${id}`,
+		putUnlike: (id: number) => `chirps/unlike/${id}`,
+
 		// DELETE
-		deleteById: 'chirps/delete',
+		deleteById: (id: number) => `chirps/delete/${id}`,
 	},
 
 	// MusicService
 	music: {
 		// GET
-		search: 'music/search',
-		getAlbumById: 'music/albums',
-		getRandomAlbums: 'music/albums/random',
-		getNewestAlbums: 'music/albums/newest',
-		getTopSellingAlbums: 'music/albums/top-selling',
-		getAlbumsByArtist: 'music/albums/artist',
-		getArtistById: 'music/artists',
-		getRandomArtists: 'music/artists/random',
+		search: (query: string) =>
+			`music/search?q=${encodeURIComponent(query)}`,
+		getAlbumById: (id: string) => `music/albums/${id}`,
+		getRandomAlbums: (count: number) =>
+			`music/albums/random?count=${count}`,
+		getNewestAlbums: (count: number) =>
+			`music/albums/newest?count=${count}`,
+		getTopSellingAlbums: (count: number) =>
+			`music/albums/top-selling?count=${count}`,
+		getAlbumsByArtist: (idArtist: number) =>
+			`music/albums/artist/${idArtist}`,
+		getArtistById: (id: string) => `music/artists/${id}`,
+		getRandomArtists: (count: number) =>
+			`music/artists/random?count=${count}`,
+		getAlbumReviews: (albumId: string) => `music/albums/${albumId}/reviews`,
+		getUserReviews: (userId: number) => `music/users/${userId}/reviews`,
+
+		// POST
+		createReview: 'music/reviews',
+
+		// DELETE
+		deleteReview: (reviewId: string, userId: number) =>
+			`music/reviews/${reviewId}?userId=${userId}`,
 	},
 };

@@ -1,0 +1,185 @@
+<div class="reviews-section">
+	<h3 class="section-title">Reviews</h3>
+
+	<!-- Create new review (only show if user doesn't have existing review) -->
+	<div
+		class="create-review"
+		*ngIf="isAuthenticated && !hasExistingReview"
+	>
+		<p-card>
+			<div class="review-form">
+				<h4>Write a Review</h4>
+				<div class="rating-section">
+					<label>Your Rating:</label>
+					<p-rating
+						[(ngModel)]="newReviewRating"
+						[stars]="10"
+					></p-rating>
+				</div>
+				<textarea
+					pTextarea
+					[(ngModel)]="newReviewContent"
+					placeholder="Write your review..."
+					rows="4"
+					class="review-input"
+				></textarea>
+				<div class="review-actions">
+					<button
+						pButton
+						label="Post Review"
+						icon="pi pi-send"
+						(click)="submitReview()"
+						[disabled]="
+							!newReviewContent.trim() ||
+							!newReviewRating ||
+							isSubmitting
+						"
+						[loading]="isSubmitting"
+						class="p-button-sm"
+					></button>
+				</div>
+			</div>
+		</p-card>
+	</div>
+
+	<!-- Reviews list -->
+	<div class="reviews-list">
+		<div
+			*ngIf="isLoading"
+			class="loading-message"
+		>
+			Loading reviews...
+		</div>
+
+		<div
+			*ngIf="!isLoading && reviews.length === 0"
+			class="no-reviews"
+		>
+			<p>No reviews yet. Be the first to review this album!</p>
+		</div>
+
+		<p-card
+			*ngFor="let review of reviews"
+			class="review-card"
+		>
+			<div class="review-content">
+				<!-- Normal view -->
+				<div *ngIf="!isReviewBeingEdited(review.id)">
+					<div class="review-header">
+						<div class="review-author">
+							<img
+								[src]="getReviewerProfilePictureUrl(review)"
+								[alt]="review.username + ' profile picture'"
+								class="review-avatar"
+								[class.clickable]="
+									shouldShowProfileLink(review)
+								"
+								(click)="navigateToReviewerProfile(review)"
+							/>
+							<div class="author-info">
+								<span
+									class="author-name"
+									[class.clickable]="
+										shouldShowProfileLink(review)
+									"
+									(click)="navigateToReviewerProfile(review)"
+									>{{ review.username }}</span
+								>
+								<div class="review-rating">
+									<span
+										*ngFor="
+											let filled of getStarArray(
+												review.rating
+											);
+											let i = index
+										"
+										class="star"
+										[class.filled]="i < review.rating"
+									>
+										{{ i < review.rating ? '★' : '☆' }}
+									</span>
+									<span class="rating-text"
+										>({{ review.rating }}/10)</span
+									>
+								</div>
+							</div>
+						</div>
+						<div class="review-meta">
+							<small class="review-time">{{
+								formatTimestamp(review.timestamp)
+							}}</small>
+							<button
+								*ngIf="canEditReview(review)"
+								pButton
+								icon="pi pi-pencil"
+								class="p-button-text p-button-sm edit-btn"
+								(click)="startEdit(review)"
+							></button>
+							<button
+								*ngIf="canDeleteReview(review)"
+								pButton
+								icon="pi pi-trash"
+								class="p-button-text p-button-sm delete-btn"
+								(click)="deleteReview(review.id)"
+							></button>
+						</div>
+					</div>
+					<div class="review-text">
+						<p>{{ review.content }}</p>
+					</div>
+				</div>
+
+				<!-- Edit view -->
+				<div
+					*ngIf="isReviewBeingEdited(review.id)"
+					class="edit-review"
+				>
+					<div class="review-author">
+						<img
+							[src]="getReviewerProfilePictureUrl(review)"
+							[alt]="review.username + ' profile picture'"
+							class="review-avatar"
+						/>
+						<span class="author-name">{{ review.username }}</span>
+					</div>
+					<div class="edit-form">
+						<div class="rating-section">
+							<label>Your Rating:</label>
+							<p-rating
+								[(ngModel)]="editRating"
+								[stars]="10"
+							></p-rating>
+						</div>
+						<textarea
+							pTextarea
+							[(ngModel)]="editContent"
+							rows="4"
+							class="review-input"
+						></textarea>
+						<div class="edit-actions">
+							<button
+								pButton
+								label="Cancel"
+								class="p-button-secondary p-button-sm"
+								(click)="cancelEdit()"
+							></button>
+							<button
+								pButton
+								label="Update"
+								icon="pi pi-check"
+								(click)="updateReview()"
+								[disabled]="
+									!editContent.trim() ||
+									!editRating ||
+									isSubmitting
+								"
+								[loading]="isSubmitting"
+								class="p-button-sm"
+							></button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</p-card>
+	</div>
+</div>

@@ -26,28 +26,21 @@ export class UserService {
 
 	getFindUserById(id: number) {
 		return this.httpClient.get<ResponseUserDto>(
-			environment.userServiceApiUrl +
-				ApiEndpoints.users.getById +
-				'/' +
-				id,
+			environment.userServiceApiUrl + ApiEndpoints.users.getById(id),
 		);
 	}
 
 	getFindUserByEmail(email: string) {
 		return this.httpClient.get<ResponseUserDto>(
 			environment.userServiceApiUrl +
-				ApiEndpoints.users.getByEmail +
-				'/' +
-				email,
+				ApiEndpoints.users.getByEmail(email),
 		);
 	}
 
 	getFindUserByUsername(username: string) {
 		return this.httpClient.get<ResponseUserDto>(
 			environment.userServiceApiUrl +
-				ApiEndpoints.users.getByUsername +
-				'/' +
-				username,
+				ApiEndpoints.users.getByUsername(username),
 		);
 	}
 
@@ -58,11 +51,10 @@ export class UserService {
 		);
 	}
 
-	postVerifyEmail(verificationToken: String) {
+	postVerifyEmail(verificationToken: string) {
 		return this.httpClient.post<ResponseUserDto>(
 			environment.userServiceApiUrl +
-				ApiEndpoints.users.postVerifyEmail +
-				`${verificationToken}`,
+				ApiEndpoints.users.postVerifyEmail(verificationToken),
 			{},
 		);
 	}
@@ -123,19 +115,14 @@ export class UserService {
 
 	deleteUserById(id: number) {
 		return this.httpClient.delete<boolean>(
-			environment.userServiceApiUrl +
-				ApiEndpoints.users.deleteById +
-				'/' +
-				id,
+			environment.userServiceApiUrl + ApiEndpoints.users.deleteById(id),
 		);
 	}
 
 	deleteUserByEmail(email: string) {
 		return this.httpClient.delete<boolean>(
 			environment.userServiceApiUrl +
-				ApiEndpoints.users.deleteByEmail +
-				'/' +
-				email,
+				ApiEndpoints.users.deleteByEmail(email),
 		);
 	}
 }
