@@ -121,6 +121,82 @@
 			</div>
 		</div>
 
+		<!-- Recent Reviews Section -->
+		<div
+			class="section"
+			*ngIf="recentReviews.length > 0 || loadingReviews"
+		>
+			<h3 class="section-title">Recent Reviews</h3>
+
+			<div
+				*ngIf="loadingReviews"
+				class="loading-message"
+			>
+				Loading reviews...
+			</div>
+
+			<div
+				*ngIf="!loadingReviews && recentReviews.length > 0"
+				class="reviews-grid"
+			>
+				<p-card
+					*ngFor="let reviewItem of recentReviews"
+					[style]="{ cursor: 'pointer' }"
+					(click)="onReviewClick(reviewItem)"
+					class="review-card"
+				>
+					<div class="review-content">
+						<img
+							[src]="
+								reviewItem.album?.strAlbumThumb ||
+								'/assets/default-album.png'
+							"
+							[alt]="reviewItem.album?.strAlbum || 'Album'"
+							class="review-album-image"
+						/>
+						<div class="review-info">
+							<h4>
+								{{
+									reviewItem.album?.strAlbum ||
+										'Unknown Album'
+								}}
+							</h4>
+							<p>
+								{{
+									reviewItem.album?.strArtist ||
+										'Unknown Artist'
+								}}
+							</p>
+							<div class="review-rating">
+								<span
+									*ngFor="
+										let star of getStarArray(
+											reviewItem.review.rating
+										);
+										let i = index
+									"
+									class="star"
+									[class.filled]="
+										i < reviewItem.review.rating
+									"
+								>
+									{{
+										i < reviewItem.review.rating ? '★' : '☆'
+									}}
+								</span>
+								<span class="rating-text"
+									>({{ reviewItem.review.rating }}/10)</span
+								>
+							</div>
+							<small class="review-date">{{
+								formatTimestamp(reviewItem.review.timestamp)
+							}}</small>
+						</div>
+					</div>
+				</p-card>
+			</div>
+		</div>
+
 		<!-- Chirps Section -->
 		<app-chirps [profileUser]="user"></app-chirps>
 	</div>
