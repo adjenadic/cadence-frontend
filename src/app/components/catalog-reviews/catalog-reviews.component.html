@@ -157,25 +157,30 @@
 							class="review-input"
 						></textarea>
 						<div class="edit-actions">
-							<button
-								pButton
-								label="Cancel"
-								class="p-button-secondary p-button-sm"
-								(click)="cancelEdit()"
-							></button>
-							<button
-								pButton
-								label="Update"
-								icon="pi pi-check"
-								(click)="updateReview()"
-								[disabled]="
-									!editContent.trim() ||
-									!editRating ||
-									isSubmitting
-								"
-								[loading]="isSubmitting"
-								class="p-button-sm"
-							></button>
+							<small class="char-count"
+								>{{ editContent.length }}/280</small
+							>
+							<div class="button-group">
+								<button
+									pButton
+									label="Cancel"
+									class="p-button-secondary p-button-sm"
+									(click)="cancelEdit()"
+								></button>
+								<button
+									pButton
+									label="Update"
+									icon="pi pi-check"
+									(click)="updateReview()"
+									[disabled]="
+										!editContent.trim() ||
+										!editRating ||
+										isSubmitting
+									"
+									[loading]="isSubmitting"
+									class="p-button-sm"
+								></button>
+							</div>
 						</div>
 					</div>
 				</div>

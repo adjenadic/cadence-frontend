@@ -4,6 +4,8 @@ import {
 	Output,
 	OnInit,
 	OnDestroy,
+	OnChanges,
+	SimpleChanges,
 	EventEmitter,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -40,7 +42,7 @@ import { Router } from '@angular/router';
 	templateUrl: './catalog-reviews.component.html',
 	styleUrl: './catalog-reviews.component.css',
 })
-export class CatalogReviewsComponent implements OnInit, OnDestroy {
+export class CatalogReviewsComponent implements OnInit, OnDestroy, OnChanges {
 	@Input() album: AlbumSummaryDto | null = null;
 	@Output() reviewSubmitted = new EventEmitter<void>();
 
@@ -84,6 +86,25 @@ export class CatalogReviewsComponent implements OnInit, OnDestroy {
 	ngOnDestroy() {
 		this.destroy$.next();
 		this.destroy$.complete();
+	}
+
+	ngOnChanges(changes: SimpleChanges) {
+		if (changes['album'] && this.album) {
+			this.resetComponentState();
+			this.loadReviews();
+		}
+	}
+
+	private resetComponentState() {
+		this.reviews = [];
+		this.newReviewContent = '';
+		this.newReviewRating = 0;
+		this.hasExistingReview = false;
+		this.editingReviewId = null;
+		this.editContent = '';
+		this.editRating = 0;
+		this.isSubmitting = false;
+		this.isLoading = true;
 	}
 
 	loadCurrentUser() {

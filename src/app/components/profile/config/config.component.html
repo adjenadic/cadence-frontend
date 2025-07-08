@@ -364,6 +364,7 @@
 										formControlName="permissions"
 										[value]="permission"
 										[disabled]="!canEditPermissions"
+										[readonly]="!canEditPermissions"
 									></p-checkbox>
 									<label>{{
 										formatPermissionLabel(permission)

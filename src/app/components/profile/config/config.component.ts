@@ -203,6 +203,10 @@ export class ConfigComponent implements OnInit, OnDestroy {
 		if (!this.canEditPronouns) {
 			this.pronounsForm.disable();
 		}
+
+		if (!this.canEditPermissions) {
+			this.permissionsForm.disable();
+		}
 	}
 
 	private loadUserProfile(username: string) {
