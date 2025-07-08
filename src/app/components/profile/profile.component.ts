@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { forkJoin, Subject, takeUntil } from 'rxjs';
+import { forkJoin, Subject, take, takeUntil } from 'rxjs';
 
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
@@ -72,7 +72,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 			if (username) {
 				this.authService
 					.getCurrentUser()
-					.pipe(takeUntil(this.destroy$))
+					.pipe(take(1), takeUntil(this.destroy$))
 					.subscribe(currentUser => {
 						this.currentUser = currentUser;
 
